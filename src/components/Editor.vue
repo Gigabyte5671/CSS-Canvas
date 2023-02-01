@@ -48,6 +48,8 @@ export default defineComponent({
 		<PrismEditor
 			class="editor"
 			line-numbers
+			:tab-size="1"
+			:insert-spaces="false"
 			:highlight="highlighter"
 			v-model="code"
 		/>
