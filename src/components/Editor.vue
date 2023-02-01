@@ -8,6 +8,8 @@ import 'prismjs/components/prism-css';
 import 'prismjs/themes/prism-tomorrow.css'; // import syntax highlighting styles
 import HTMLGenerator from '../htmlGenerator';
 
+const persistentStorageKey = 'CSSCanvasInput';
+
 export default defineComponent({
 	name: 'Editor',
 	components: {
@@ -20,12 +22,22 @@ export default defineComponent({
 			},
 			set (value: string) {
 				HTMLGenerator.getInstance().set(value);
+				this.saveToPersistentStorage(value);
 			}
 		}
 	},
 	methods: {
 		highlighter (code: string) {
 			return highlight(code, languages.css);
+		},
+		saveToPersistentStorage (value: string): void {
+			window.localStorage.setItem(persistentStorageKey, value);
+		}
+	},
+	mounted () {
+		const persistentStorageContent = window.localStorage.getItem(persistentStorageKey);
+		if (persistentStorageContent) {
+			this.code = persistentStorageContent;
 		}
 	}
 });
