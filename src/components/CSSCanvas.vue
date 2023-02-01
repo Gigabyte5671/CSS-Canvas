@@ -3,12 +3,16 @@ import { defineComponent } from 'vue';
 
 export default defineComponent({
 	name: 'CSSCanvas',
+	props: {
+		mode: { type: Boolean, required: false }
+	}
 });
 </script>
 
 <template>
 	<output
 		class="cssCanvas"
+		:style="{ backgroundColor: mode ? `var(--color-text)` : `var(--color-background)` }"
 	>
 	</output>
 </template>
