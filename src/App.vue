@@ -57,10 +57,18 @@ export default defineComponent({
 </script>
 
 <template>
+	<nav>
+		<img class="logo" src="https://www.vectorlogo.zone/logos/w3_css/w3_css-icon.svg" alt="CSS Canvas logo" title="CSS Canvas">
 		<button
 			:title="colorMode ? 'Change canvas to dark mode' : 'Change canvas to light mode'"
 			@click="colorMode = !colorMode"
 		>
+			<span class="material-symbols-rounded">{{ colorMode ? 'dark_mode' : 'light_mode' }}</span>
+		</button>
+		<button title="CSS Canvas on GitHub">
+			<img src="https://simpleicons.org/icons/github.svg" alt="GitHub logo" style="filter: invert(1);">
+		</button>
+	</nav>
 	<main
 		@mousemove="resize($event.x, $event.target)"
 		@mouseleave="endResize()"
@@ -84,7 +92,25 @@ export default defineComponent({
 </template>
 
 <style scoped>
+nav {
+	display: flex;
+	flex-flow: row nowrap;
+	justify-content: flex-start;
+	align-items: center;
+	gap: 1ch;
+	padding: 0.7ch 1ch;
+	border-bottom: 1px solid var(--color-border);
 }
+nav .logo {
+	display: block;
+	width: 2rem;
+	height: 2rem;
+	margin-right: 1ch;
+}
+nav > *:last-child {
+	margin-left: auto;
+}
+
 
 main {
 	display: flex;
