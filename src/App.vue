@@ -1,5 +1,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
+import HTMLGenerator from './htmlGenerator';
+import JSZip from 'jszip';
 import Editor from './components/Editor.vue';
 import CSSCanvas from './components/CSSCanvas.vue';
 
@@ -51,6 +53,25 @@ export default defineComponent({
 		},
 		endResize (): void {
 			this.resizing = false;
+		},
+		async saveOutput (): Promise<void> {
+			// Create the output files.
+			const cssFile = new File([HTMLGenerator.getInstance().input.value], 'index.css', { type: 'text/css' });
+			const htmlFile = new File([HTMLGenerator.getInstance().output.value], 'index.html', { type: 'text/html' });
+
+			// Create zip file.
+			const zip = new JSZip();
+			zip.file('index.css', cssFile);
+			zip.file('index.html', htmlFile);
+			const zipFile = await zip.generateAsync({ type: 'blob' })
+
+			// Create download link.
+			var anchor = document.createElement('a');
+			anchor.href = URL.createObjectURL(zipFile);
+			anchor.download = 'index.zip';
+
+			// Initiate the download.
+			anchor.click();
 		}
 	}
 });
@@ -59,6 +80,9 @@ export default defineComponent({
 <template>
 	<nav>
 		<img class="logo" src="https://www.vectorlogo.zone/logos/w3_css/w3_css-icon.svg" alt="CSS Canvas logo" title="CSS Canvas">
+		<button title="Save" @click="saveOutput()">
+			<span class="material-symbols-rounded">save</span>
+		</button>
 		<button
 			:title="colorMode ? 'Change canvas to dark mode' : 'Change canvas to light mode'"
 			@click="colorMode = !colorMode"
