@@ -5,9 +5,22 @@
 		<link rel="icon" type="image/svg+xml" href="/logo-small.webp" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<title>CSS Canvas</title>
+		<style>
+			.cssCanvasPreloader {
+				position: absolute;
+				inset: 0;
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				background: radial-gradient(circle at center, #264de340, transparent 90%);
+			}
+		</style>
 		<script type="module" src="/src/main.ts" defer></script>
 	</head>
 
 	<body id="app">
+		<div class="cssCanvasPreloader">
+			<img src="/logo-small.webp" alt="CSS Canvas logo">
+		</div>
 	</body>
 </html>
