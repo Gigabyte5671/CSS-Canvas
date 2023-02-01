@@ -1,3 +1,7 @@
+<script setup lang="ts">
+import HTMLGenerator from '../htmlGenerator';
+</script>
+
 <script lang="ts">
 import { defineComponent } from 'vue';
 
@@ -13,6 +17,7 @@ export default defineComponent({
 	<output
 		class="cssCanvas"
 		:style="{ backgroundColor: mode ? `var(--color-text)` : `var(--color-background)` }"
+		v-html="HTMLGenerator.getInstance().output.value"
 	>
 	</output>
 </template>
