@@ -1,9 +1,12 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
+import Editor from './components/Editor.vue';
+import CSSCanvas from './components/CSSCanvas.vue';
 
 export default defineComponent({
 	name: 'App',
 	components: {
+		Editor,
 		CSSCanvas
 	},
 	data() {
@@ -21,6 +24,8 @@ export default defineComponent({
 		>
 	<main
 	>
+		<Editor
+		/>
 		<CSSCanvas
 			:mode="colorMode"
 		/>
