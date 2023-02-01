@@ -6,10 +6,22 @@ import 'vue-prism-editor/dist/prismeditor.min.css';
 import { highlight, languages } from 'prismjs/components/prism-core';
 import 'prismjs/components/prism-css';
 import 'prismjs/themes/prism-tomorrow.css'; // import syntax highlighting styles
+import HTMLGenerator from '../htmlGenerator';
+
 export default defineComponent({
 	name: 'Editor',
 	components: {
 		PrismEditor
+	},
+	computed: {
+		code: {
+			get (): string {
+				return HTMLGenerator.getInstance().input.value;
+			},
+			set (value: string) {
+				HTMLGenerator.getInstance().set(value);
+			}
+		}
 	},
 	methods: {
 		highlighter (code: string) {
@@ -25,6 +37,7 @@ export default defineComponent({
 			class="editor"
 			line-numbers
 			:highlight="highlighter"
+			v-model="code"
 		/>
 	</div>
 </template>
