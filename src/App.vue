@@ -89,9 +89,9 @@ export default defineComponent({
 		>
 			<span class="material-symbols-rounded">{{ colorMode ? 'dark_mode' : 'light_mode' }}</span>
 		</button>
-		<button title="CSS Canvas on GitHub">
+		<a class="button" href="https://github.com/Gigabyte5671/CSS-Canvas" target="_blank" title="CSS Canvas on GitHub">
 			<img src="https://simpleicons.org/icons/github.svg" alt="GitHub logo" style="filter: invert(1);">
-		</button>
+		</a>
 	</nav>
 	<main
 		@mousemove="resize($event.x, $event.target)"
