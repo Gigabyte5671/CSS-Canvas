@@ -24,4 +24,5 @@ export default defineConfig({
     // produce sourcemaps for debug builds
     sourcemap: !!process.env.TAURI_DEBUG,
   },
+  base: process.env.NODE_ENV === "production" ? "/CSS-Canvas/" : "/"
 });
