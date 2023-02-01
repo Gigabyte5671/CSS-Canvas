@@ -79,7 +79,7 @@ export default defineComponent({
 
 <template>
 	<nav>
-		<img class="logo" src="https://www.vectorlogo.zone/logos/w3_css/w3_css-icon.svg" alt="CSS Canvas logo" title="CSS Canvas">
+		<img class="logo" src="./assets/logo-small.webp" alt="CSS Canvas logo" title="CSS Canvas">
 		<button title="Save" @click="saveOutput()">
 			<span class="material-symbols-rounded">save</span>
 		</button>
