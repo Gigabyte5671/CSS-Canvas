@@ -143,8 +143,11 @@ export default defineComponent({
 	</nav>
 	<main
 		@mousemove="resize($event.x, $event.target)"
+		@touchmove="resize($event.touches[0].clientX, $event.target)"
 		@mouseleave="endResize()"
+		@touchend="endResize()"
 		@mouseup="endResize()"
+		@touchcancel="endResize()"
 	>
 		<Editor
 			:style="{ width: editorWidth }"
@@ -152,6 +155,7 @@ export default defineComponent({
 		<div
 			class="resizer"
 			@mousedown="startResize()"
+			@touchstart="startResize()"
 			@dblclick="panelRatio.value = panelRatio.default"
 		>
 			<span class="hitbox"></span>

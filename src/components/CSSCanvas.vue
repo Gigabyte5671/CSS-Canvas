@@ -66,8 +66,11 @@ export default defineComponent({
 			backgroundColor: mode ? `var(--color-text)` : `var(--color-background)`
 		}"
 		@mousemove="resize($event.y, $event.target)"
+		@touchmove="resize($event.touches[0].clientY, $event.target)"
 		@mouseleave="endResize()"
+		@touchend="endResize()"
 		@mouseup="endResize()"
+		@touchcancel="endResize()"
 	>
 		<output
 			:style="{ height: canvasHeight }"
@@ -76,6 +79,7 @@ export default defineComponent({
 		<div
 			class="resizer"
 			@mousedown="startResize()"
+			@touchstart="startResize()"
 			@dblclick="panelRatio.value = panelRatio.default"
 		>
 			<span class="hitbox"></span>
