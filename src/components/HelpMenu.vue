@@ -26,17 +26,19 @@ export default defineComponent({
 	>
 		<article @click.stop="">
 			<h2>Welcome to CSS Canvas</h2>
-			<p>The window on the left is your input editor. Fill this area with CSS to your heart's content.</p>
-			<p>The window on the right is the canvas. This is where your creations come to life!</p>
-			<p>CSS that you write in the editor will automatically be displayed on the canvas; no need to refresh.</p>
+			<p>⬅️ The window on the left is your input editor. Fill this area with CSS to your heart's content.</p>
+			<p>➡️ The window on the right is the canvas. This is where your creations come to life!</p>
+			<p>↘️ At the bottom of the canvas is the box-model view. This shows you the invisible positioning components of your creations.</p>
+			<p>Any CSS that you write in the editor will automatically be displayed on the canvas; no need to refresh.</p>
 			<br>
 			<h3>Special properties</h3>
-			<p>Any CSS features that your browser supports are available to you. However, CSS Canvas also has a few extra properties that enable you to add more content to your creations:</p>
+			<p>All CSS features that your browser supports are available to you. However, CSS Canvas also has a few extra properties that enable you to add more content to your creations:</p>
 			<ul>
 				<li><span class="code">inner-text</span> Adds text content to the selected element.</li>
 				<li><span class="code">src</span> Adds a source attribute to the selected element.</li>
 				<li><span class="code">href</span> Adds an href attribute to the selected element.</li>
 			</ul>
+			<br>
 			<p>Have fun!</p>
 		</article>
 	</div>
