@@ -104,6 +104,13 @@ export default defineComponent({
 			// Update the state.
 			PersistentStorage.projectSaved = true;
 		}
+	},
+	mounted() {
+		window.addEventListener('keydown', (event) => {
+			if (event.code === 'Escape') {
+				this.showHelp = false;
+			}
+		});
 	}
 });
 </script>
