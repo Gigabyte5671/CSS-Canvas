@@ -1,0 +1,21 @@
+.CSSCanvasBoxModelMargin {
+	display: grid;
+	place-items: center;
+	background: #ad8052;
+}
+
+.CSSCanvasBoxModelPadding {
+	display: grid;
+	place-items: center;
+	font: inherit;
+	background: #b7c47f;
+	border-color: #e3c381 !important;
+}
+
+.CSSCanvasBoxModelContent {
+	display: grid;
+	place-items: center;
+	color: transparent !important;
+	font: inherit;
+	background: #87b2bc;
+}
