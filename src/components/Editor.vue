@@ -7,8 +7,7 @@ import { highlight, languages } from 'prismjs/components/prism-core';
 import 'prismjs/components/prism-css';
 import 'prismjs/themes/prism-tomorrow.css'; // import syntax highlighting styles
 import HTMLGenerator from '../htmlGenerator';
-
-const persistentStorageKey = 'CSSCanvasInput';
+import PersistentStorage from '../persistentStorage';
 
 export default defineComponent({
 	name: 'Editor',
@@ -31,14 +30,11 @@ export default defineComponent({
 			return highlight(code, languages.css);
 		},
 		saveToPersistentStorage (value: string): void {
-			window.localStorage.setItem(persistentStorageKey, value);
+			PersistentStorage.input = value;
 		}
 	},
 	mounted () {
-		const persistentStorageContent = window.localStorage.getItem(persistentStorageKey);
-		if (persistentStorageContent) {
-			this.code = persistentStorageContent;
-		}
+		this.code = PersistentStorage.input;
 	}
 });
 </script>
