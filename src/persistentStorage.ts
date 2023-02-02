@@ -15,6 +15,14 @@ export default class PersistentStorage {
 		window.localStorage.setItem(this.#keys.editorInput, value);
 	}
 
+	static get title (): string {
+		return window.localStorage.getItem(this.#keys.title) ?? 'Untitled';
+	}
+
+	static set title (value: string) {
+		window.localStorage.setItem(this.#keys.title, value);
+	}
+
 	static get projectSaved (): boolean {
 		return Boolean(window.localStorage.getItem(this.#keys.projectHasBeenSaved));
 	}

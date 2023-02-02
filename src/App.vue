@@ -1,6 +1,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import HTMLGenerator from './htmlGenerator';
+import PersistentStorage from './persistentStorage';
 import JSZip from 'jszip';
 import Editor from './components/Editor.vue';
 import CSSCanvas from './components/CSSCanvas.vue';
@@ -34,6 +35,14 @@ export default defineComponent({
 		canvasWidth (): string {
 			const width = 100 - 50 * this.panelRatio.value;
 			return `${width}%`;
+		},
+		projectTitle: {
+			get (): string {
+				return PersistentStorage.title;
+			},
+			set (value: string) {
+				PersistentStorage.title = value;
+			}
 		}
 	},
 	methods: {
@@ -65,14 +74,14 @@ export default defineComponent({
 
 			// Create zip file.
 			const zip = new JSZip();
-			zip.file('index.css', cssFile);
-			zip.file('index.html', htmlFile);
+			zip.file(`${PersistentStorage.title}.css`, cssFile);
+			zip.file(`${PersistentStorage.title}.html`, htmlFile);
 			const zipFile = await zip.generateAsync({ type: 'blob' })
 
 			// Create download link.
 			var anchor = document.createElement('a');
 			anchor.href = URL.createObjectURL(zipFile);
-			anchor.download = 'index.zip';
+			anchor.download = `${PersistentStorage.title}.zip`;
 
 			// Initiate the download.
 			anchor.click();
@@ -84,6 +93,7 @@ export default defineComponent({
 <template>
 	<nav>
 		<img class="logo" src="./assets/logo-small.webp" alt="CSS Canvas logo" title="CSS Canvas">
+		<input type="text" class="projectTitle" v-model="projectTitle">
 		<button title="Save" @click="saveOutput()">
 			<span class="material-symbols-rounded">save</span>
 		</button>
@@ -141,6 +151,11 @@ nav .logo {
 	width: 2rem;
 	height: 2rem;
 	margin-right: 1ch;
+}
+nav .projectTitle {
+	padding: 0.2em 0.75ch;
+	font-size: 1rem;
+	border-radius: 5px;
 }
 nav > *:last-child {
 	margin-left: auto;
