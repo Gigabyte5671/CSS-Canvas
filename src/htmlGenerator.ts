@@ -329,6 +329,10 @@ class HTMLGenerator {
 	get boxModel (): string {
 		return this.computeBoxModel(this.input.value);
 	}
+
+	clear (): void {
+		this.set('');
+	}
 }
 
 export default HTMLGenerator;
