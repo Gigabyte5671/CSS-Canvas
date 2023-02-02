@@ -4,12 +4,14 @@ import HTMLGenerator from './htmlGenerator';
 import JSZip from 'jszip';
 import Editor from './components/Editor.vue';
 import CSSCanvas from './components/CSSCanvas.vue';
+import HelpMenu from './components/HelpMenu.vue';
 
 export default defineComponent({
 	name: 'App',
 	components: {
 		Editor,
-		CSSCanvas
+		CSSCanvas,
+		HelpMenu
 	},
 	data() {
 		return {
@@ -19,7 +21,8 @@ export default defineComponent({
 				value: 1
 			},
 			resizing: false,
-			colorMode: false
+			colorMode: false,
+			showHelp: false
 		};
 	},
 	computed: {
@@ -84,6 +87,12 @@ export default defineComponent({
 			<span class="material-symbols-rounded">save</span>
 		</button>
 		<button
+			title="Help"
+			@click="showHelp = true"
+		>
+			<span class="material-symbols-rounded">question_mark</span>
+		</button>
+		<button
 			:title="colorMode ? 'Change canvas to dark mode' : 'Change canvas to light mode'"
 			@click="colorMode = !colorMode"
 		>
@@ -113,6 +122,7 @@ export default defineComponent({
 			:mode="colorMode"
 		/>
 	</main>
+	<HelpMenu v-model="showHelp" />
 </template>
 
 <style scoped>
