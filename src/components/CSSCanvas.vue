@@ -42,8 +42,9 @@ export default defineComponent({
 				while (mainElement && mainElement?.tagName?.toLowerCase() !== 'main') {
 					mainElement = mainElement.parentElement;
 				}
-				if (mainElement && 'clientHeight' in mainElement) {
-					const ratio = position / (mainElement.clientHeight / 2);
+				const navRectangle = document.querySelector('nav')?.getBoundingClientRect();
+				if (navRectangle && mainElement && 'clientHeight' in mainElement) {
+					const ratio = (position - navRectangle.height) / (mainElement.clientHeight / 2);
 					this.panelRatio.value = ratio < this.panelRatio.min ? this.panelRatio.min :
 											ratio > this.panelRatio.max ? this.panelRatio.max :
 											ratio;
