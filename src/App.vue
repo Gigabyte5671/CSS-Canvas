@@ -67,6 +67,21 @@ export default defineComponent({
 		endResize (): void {
 			this.resizing = false;
 		},
+		createNewProject (): void {
+			let confirmation = true;
+			if (
+				HTMLGenerator.getInstance().input.value.length > 0
+				&& !PersistentStorage.projectSaved
+			) {
+				confirmation = window.confirm('You have unsaved changes. Are you sure you want to create a new project?');
+			}
+			if (confirmation) {
+				HTMLGenerator.getInstance().clear();
+				PersistentStorage.input = '';
+				PersistentStorage.title = 'Untitled';
+				this.$forceUpdate();
+			}
+		},
 		async saveOutput (): Promise<void> {
 			// Create the output files.
 			const cssFile = new File([HTMLGenerator.getInstance().input.value], 'index.css', { type: 'text/css' });
@@ -85,6 +100,9 @@ export default defineComponent({
 
 			// Initiate the download.
 			anchor.click();
+
+			// Update the state.
+			PersistentStorage.projectSaved = true;
 		}
 	}
 });
@@ -94,6 +112,9 @@ export default defineComponent({
 	<nav>
 		<img class="logo" src="./assets/logo-small.webp" alt="CSS Canvas logo" title="CSS Canvas">
 		<input type="text" class="projectTitle" v-model="projectTitle">
+		<button title="New" @click="createNewProject()">
+			<span class="material-symbols-rounded">add_box</span>
+		</button>
 		<button title="Save" @click="saveOutput()">
 			<span class="material-symbols-rounded">save</span>
 		</button>

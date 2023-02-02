@@ -13,6 +13,7 @@ export default class PersistentStorage {
 
 	static set input (value: string) {
 		window.localStorage.setItem(this.#keys.editorInput, value);
+		this.projectSaved = false;
 	}
 
 	static get title (): string {
@@ -21,6 +22,7 @@ export default class PersistentStorage {
 
 	static set title (value: string) {
 		window.localStorage.setItem(this.#keys.title, value);
+		this.projectSaved = false;
 	}
 
 	static get projectSaved (): boolean {
