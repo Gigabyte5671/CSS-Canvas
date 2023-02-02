@@ -1,6 +1,7 @@
 import { ref } from 'vue';
 import CSS from 'css';
 import type { Stylesheet } from 'css';
+import expand from 'emmet';
 
 class HTMLGenerator {
 	static instance: HTMLGenerator;
@@ -24,24 +25,39 @@ class HTMLGenerator {
 
 	parse (css: string): string {
 		let parserOutput = '';
+		let emmetString = '';
 		let stylesheet = {} as Stylesheet;
 
 		try {
 			stylesheet = CSS.parse(css);
-			console.log(stylesheet);
 		} catch (e) {
-			console.warn(e);
+			console.warn('CSS Error:', e);
 		}
 
 		stylesheet.stylesheet?.rules.forEach((rule) => {
 			let declarations = '';
+			let textContent = '';
 			// @ts-expect-error: 'declarations' does exist on 'rule'.
 			rule.declarations.forEach((declaration) => {
-				declarations += `${declaration.property}: ${declaration.value};`;
+				if (declaration.property === 'inner-text') {
+					textContent = declaration.value;
+					return;
+				}
+				declarations += `${declaration.property}:${declaration.value};`;
 			});
 			// @ts-expect-error: 'selectors' does exist on 'rule'.
-			parserOutput += `<${rule.selectors} style="${declarations}"></${rule.selectors}>`;
+			console.log(rule.selectors);
+			// @ts-expect-error: 'selectors' does exist on 'rule'.
+			console.log(rule.selectors.join('').split(' ').join('>'));
+			// @ts-expect-error: 'selectors' does exist on 'rule'.
+			emmetString += `${rule.selectors.join('').split(' ').join('>')}[style="${declarations}"]{${textContent}}`;
 		});
+
+		try {
+			parserOutput = expand(emmetString);
+		} catch (e) {
+			console.warn('Emmet Error:', e);
+		}
 
 		return parserOutput;
 	}
