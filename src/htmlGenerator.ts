@@ -82,8 +82,8 @@ class HTMLGenerator {
 		fontFamily?: string,
 		textContent?: string
 	}): string {
-		options.width = options.sizing === 'border-box' ? `calc(${options.width} - (${options.paddingLeft} + ${options.paddingRight}));` : options.width;
-		options.height = options.sizing === 'border-box' ? `calc(${options.height} - (${options.paddingTop} + ${options.paddingBottom}));` : options.height;
+		options.width = options.sizing === 'border-box' ? `calc(${options.width} - (${options.paddingLeft || '0px'} + ${options.paddingRight || '0px'}));` : options.width;
+		options.height = options.sizing === 'border-box' ? `calc(${options.height} - (${options.paddingTop || '0px'} + ${options.paddingBottom || '0px'}));` : options.height;
 
 		return `<div
 					class="CSSCanvasBoxModelMargin"
