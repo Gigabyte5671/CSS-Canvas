@@ -18,6 +18,7 @@ export default defineComponent({
 			panelRatio: {
 				min: 0.2,
 				max: 1.8,
+				default: 1,
 				value: 1
 			},
 			resizing: false,
@@ -113,7 +114,7 @@ export default defineComponent({
 		<div
 			class="resizer"
 			@mousedown="startResize()"
-			@dblclick="panelRatio.value = 1"
+			@dblclick="panelRatio.value = panelRatio.default"
 		>
 			<span class="hitbox"></span>
 		</div>
