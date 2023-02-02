@@ -12,6 +12,7 @@
   "dependencies": {
     "@tauri-apps/api": "^1.1.0",
     "css": "^3.0.0",
+    "emmet": "^2.3.6",
     "jszip": "^3.10.1",
     "prismjs": "^1.29.0",
     "vue": "^3.2.37",
