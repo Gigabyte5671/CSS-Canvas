@@ -37,10 +37,19 @@ class HTMLGenerator {
 		stylesheet.stylesheet?.rules.forEach((rule) => {
 			let declarations = '';
 			let textContent = '';
+			let otherProps = [] as string[];
 			// @ts-expect-error: 'declarations' does exist on 'rule'.
 			rule.declarations.forEach((declaration) => {
 				if (declaration.property === 'inner-text') {
 					textContent = declaration.value;
+					return;
+				}
+				if (declaration.property === 'src') {
+					otherProps.push(`[src="${declaration.value}"]`);
+					return;
+				}
+				if (declaration.property === 'href') {
+					otherProps.push(`[href="${declaration.value}"]`);
 					return;
 				}
 				declarations += `${declaration.property}:${declaration.value};`;
@@ -50,7 +59,7 @@ class HTMLGenerator {
 			// @ts-expect-error: 'selectors' does exist on 'rule'.
 			console.log(rule.selectors.join('').split(' ').join('>'));
 			// @ts-expect-error: 'selectors' does exist on 'rule'.
-			emmetString += `${rule.selectors.join('').split(' ').join('>')}[style="${declarations}"]{${textContent}}`;
+			emmetString += `${rule.selectors.join('').split(' ').join('>')}[style="${declarations}"]${otherProps.join('')}{${textContent}}`;
 		});
 
 		try {
