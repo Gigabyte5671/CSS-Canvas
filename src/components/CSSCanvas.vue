@@ -167,16 +167,17 @@ export default defineComponent({
 	z-index: 1;
 	bottom: 0;
 	display: flex;
-	flex-flow: row nowrap;
+	flex-flow: row wrap;
 	justify-content: center;
 	align-items: center;
-	gap: 5ch;
+	gap: 1ch 5ch;
 	width: 100%;
-	padding: 1ch 2ch;
+	padding: 1ch 2ch 2ch;
 	font-size: 0.8rem;
 	background-color: inherit;
 }
 .boxModelKey p {
+	margin: 0;
 	white-space: nowrap;
 }
 .boxModelKey p span {

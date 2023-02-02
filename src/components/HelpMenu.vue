@@ -25,6 +25,7 @@ export default defineComponent({
 		@click="hide()"
 	>
 		<article @click.stop="">
+			<button class="close" @click="hide()"><span class="material-symbols-rounded">close</span></button>
 			<h2>Welcome to CSS Canvas</h2>
 			<p>⬅️ The window on the left is your input editor. Fill this area with CSS to your heart's content.</p>
 			<p>➡️ The window on the right is the canvas. This is where your creations come to life!</p>
@@ -50,7 +51,9 @@ export default defineComponent({
 	z-index: 10;
 	inset: 0;
 	display: flex;
+	padding: 2rem 1rem;
 	background-color: #000a;
+	overflow-y: auto;
 }
 .helpMenu > article {
 	max-width: 400px;
@@ -58,6 +61,12 @@ export default defineComponent({
 	padding: 0 3ch 1em;
 	background-color: var(--color-background);
 	border-radius: 5px;
+}
+.helpMenu > article > .close {
+	position: absolute;
+	z-index: 2;
+	top: 0.5rem;
+	right: 0.5rem;
 }
 .helpMenu span.code {
 	padding: 0.2em 1ch;

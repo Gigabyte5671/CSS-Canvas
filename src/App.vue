@@ -185,6 +185,21 @@ nav .projectTitle {
 	font-size: 1rem;
 	border-radius: 5px;
 }
+@media only screen and (max-width: 500px) {
+	nav .projectTitle {
+		max-width: 15ch;
+	}
+}
+@media only screen and (max-width: 440px) {
+	nav .projectTitle {
+		max-width: 10ch;
+	}
+}
+@media only screen and (max-width: 370px) {
+	nav .projectTitle {
+		display: none;
+	}
+}
 nav > *:last-child {
 	margin-left: auto;
 }
