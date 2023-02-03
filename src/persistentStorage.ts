@@ -1,4 +1,6 @@
 export default class PersistentStorage {
+	static #enabled = true;
+
 	static #keys = {
 		editorInput: 'CSSCanvasInput',
 		title: 'CSSCanvasProjectTitle',
@@ -12,6 +14,9 @@ export default class PersistentStorage {
 	}
 
 	static set input (value: string) {
+		if (!this.#enabled) {
+			return;
+		}
 		window.localStorage.setItem(this.#keys.editorInput, value);
 		this.projectSaved = false;
 	}
@@ -21,6 +26,9 @@ export default class PersistentStorage {
 	}
 
 	static set title (value: string) {
+		if (!this.#enabled) {
+			return;
+		}
 		window.localStorage.setItem(this.#keys.title, value);
 		this.projectSaved = false;
 	}
@@ -35,5 +43,9 @@ export default class PersistentStorage {
 		} else {
 			window.localStorage.removeItem(this.#keys.projectHasBeenSaved);
 		}
+	}
+
+	static disable (): void {
+		this.#enabled = false;
 	}
 }

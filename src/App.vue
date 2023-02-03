@@ -24,7 +24,8 @@ export default defineComponent({
 			},
 			resizing: false,
 			colorMode: false,
-			showHelp: false
+			showHelp: false,
+			shareLinkCopied: false
 		};
 	},
 	computed: {
@@ -103,6 +104,14 @@ export default defineComponent({
 
 			// Update the state.
 			PersistentStorage.projectSaved = true;
+		},
+		share (): void {
+			const base64 = btoa(HTMLGenerator.getInstance().input.value);
+			navigator.clipboard.writeText(`https://gigabyte5671.github.io/CSS-Canvas/?input=${base64}`);
+			this.shareLinkCopied = true;
+			window.setTimeout(() => {
+				this.shareLinkCopied = false;
+			}, 2000);
 		}
 	},
 	mounted() {
@@ -111,6 +120,14 @@ export default defineComponent({
 				this.showHelp = false;
 			}
 		});
+
+		// Check if a share link exists in the url.
+		const search = window.location.search;
+		if (/^\?input=/i.test(search)) {
+			PersistentStorage.projectSaved = true;
+			PersistentStorage.disable();
+			HTMLGenerator.getInstance().set(atob(search.split('?input=')[1]));
+		}
 	}
 });
 </script>
@@ -125,6 +142,14 @@ export default defineComponent({
 		<button title="Save" @click="saveOutput()">
 			<span class="material-symbols-rounded">save</span>
 		</button>
+		<Transition>
+			<button v-if="shareLinkCopied" title="Link copied to clipboard" @click.stop="">
+				<span class="material-symbols-rounded">done</span>
+			</button>
+			<button v-else title="Share" @click="share()">
+				<span class="material-symbols-rounded">share</span>
+			</button>
+		</Transition>
 		<button
 			title="Help"
 			@click="showHelp = true"
@@ -261,5 +286,21 @@ main {
 }
 .resizer:hover::after {
 	opacity: 1;
+}
+</style>
+
+<style>
+.v-enter-active,
+.v-leave-active {
+	transition: 0.2s ease opacity;
+}
+
+.v-enter-active {
+	position: absolute;
+}
+
+.v-enter-from,
+.v-leave-to {
+	opacity: 0;
 }
 </style>
