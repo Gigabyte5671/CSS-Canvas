@@ -215,7 +215,7 @@ nav .projectTitle {
 	font-size: 1rem;
 	border-radius: 5px;
 }
-@media only screen and (max-width: 500px) {
+@media only screen and (max-width: 510px) {
 	nav .projectTitle {
 		max-width: 15ch;
 	}
@@ -225,7 +225,7 @@ nav .projectTitle {
 		max-width: 10ch;
 	}
 }
-@media only screen and (max-width: 370px) {
+@media only screen and (max-width: 390px) {
 	nav .projectTitle {
 		display: none;
 	}
