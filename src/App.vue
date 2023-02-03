@@ -107,7 +107,7 @@ export default defineComponent({
 		},
 		share (): void {
 			const base64 = btoa(HTMLGenerator.getInstance().input.value);
-			navigator.clipboard.writeText(`https://gigabyte5671.github.io/CSS-Canvas/?input=${base64}`);
+			navigator.clipboard.writeText(`https://gigabyte5671.github.io/CSS-Canvas/?css=${base64}`);
 			this.shareLinkCopied = true;
 			window.setTimeout(() => {
 				this.shareLinkCopied = false;
@@ -126,7 +126,7 @@ export default defineComponent({
 		if (/^\?input=/i.test(search)) {
 			PersistentStorage.projectSaved = true;
 			PersistentStorage.disable();
-			HTMLGenerator.getInstance().set(atob(search.split('?input=')[1]));
+			HTMLGenerator.getInstance().set(atob(search.split('?css=')[1]));
 		}
 	}
 });
