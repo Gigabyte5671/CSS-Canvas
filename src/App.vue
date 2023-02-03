@@ -3,6 +3,7 @@ import { defineComponent } from 'vue';
 import HTMLGenerator from './htmlGenerator';
 import PersistentStorage from './persistentStorage';
 import JSZip from 'jszip';
+import LZString from 'lz-string';
 import Editor from './components/Editor.vue';
 import CSSCanvas from './components/CSSCanvas.vue';
 import HelpMenu from './components/HelpMenu.vue';
@@ -106,8 +107,8 @@ export default defineComponent({
 			PersistentStorage.projectSaved = true;
 		},
 		share (): void {
-			const base64 = btoa(HTMLGenerator.getInstance().input.value);
-			navigator.clipboard.writeText(`https://gigabyte5671.github.io/CSS-Canvas/?css=${base64}`);
+			const compressedCSS = LZString.compressToBase64(HTMLGenerator.getInstance().input.value);
+			navigator.clipboard.writeText(`https://gigabyte5671.github.io/CSS-Canvas/?css=${compressedCSS}`);
 			this.shareLinkCopied = true;
 			window.setTimeout(() => {
 				this.shareLinkCopied = false;
@@ -126,7 +127,7 @@ export default defineComponent({
 		if (/^\?input=/i.test(search)) {
 			PersistentStorage.projectSaved = true;
 			PersistentStorage.disable();
-			HTMLGenerator.getInstance().set(atob(search.split('?css=')[1]));
+			HTMLGenerator.getInstance().set(LZString.decompressFromBase64(search.split('?css=')[1]) ?? '');
 		}
 	}
 });
