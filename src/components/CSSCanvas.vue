@@ -18,7 +18,13 @@ export default defineComponent({
 				default: 1.25,
 				value: 1.25
 			},
-			resizing: false
+			resizing: false,
+			zoom: {
+				min: 0.2,
+				max: 5.0,
+				difference: 0.2,
+				value: 1.0
+			}
 		}
 	},
 	computed: {
@@ -29,6 +35,9 @@ export default defineComponent({
 		boxModelHeight (): string {
 			const height = 100 - 50 * this.panelRatio.value;
 			return `${height}%`;
+		},
+		zoomScale (): string {
+			return `scale(${this.zoom.value * 100}%)`;
 		}
 	},
 	methods: {
@@ -53,6 +62,18 @@ export default defineComponent({
 		},
 		endResize (): void {
 			this.resizing = false;
+		},
+		zoomIn (): void {
+			this.zoom.value += this.zoom.difference;
+			if (this.zoom.value > this.zoom.max) {
+				this.zoom.value = this.zoom.max;
+			}
+		},
+		zoomOut (): void {
+			this.zoom.value -= this.zoom.difference;
+			if (this.zoom.value < this.zoom.min) {
+				this.zoom.value = this.zoom.min;
+			}
 		}
 	}
 });
@@ -73,7 +94,11 @@ export default defineComponent({
 		@touchcancel="endResize()"
 	>
 		<output
-			:style="{ height: canvasHeight }"
+			class="output"
+			:style="{
+				height: canvasHeight,
+				transform: zoomScale
+			}"
 			v-html="HTMLGenerator.getInstance().output.value"
 		></output>
 		<div
@@ -85,9 +110,24 @@ export default defineComponent({
 			<span class="hitbox"></span>
 		</div>
 		<output
-			:style="{ height: boxModelHeight }"
+			:style="{
+				height: boxModelHeight,
+				transform: zoomScale
+			}"
 			v-html="HTMLGenerator.getInstance().boxModel"
 		></output>
+		<div
+			class="zoomControls"
+			:style="{ bottom: `calc(${boxModelHeight} - 2ch)` }"
+		>
+			<button title="Zoom out" @click="zoomOut()">
+				<span class="material-symbols-rounded">remove</span>
+			</button>
+			<button title="Zoom in" @click="zoomIn()">
+				<span class="material-symbols-rounded">add</span>
+			</button>
+			<output>{{ (zoom.value * 100).toFixed(0) }}%</output>
+		</div>
 		<div class="boxModelKey">
 			<p><span style="background: #87b2bc;"></span>&nbsp;&nbsp;Content</p>
 			<p><span style="background: #b7c47f;"></span>&nbsp;&nbsp;Padding</p>
@@ -107,6 +147,7 @@ export default defineComponent({
 	height: 100%;
 	background-color: var(--color-background);
 	transition: 0.2s ease background-color;
+	overflow: hidden;
 	user-select: none;
 }
 .cssCanvas output {
@@ -164,6 +205,24 @@ export default defineComponent({
 }
 .resizer:hover::after {
 	opacity: 1;
+}
+
+.zoomControls {
+	position: absolute;
+	right: 1.5ch;
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	grid-template-rows: 1fr 1.2rem;
+	place-items: center;
+	gap: 2px;
+	background-color: var(--color-border);
+	border-radius: 5px;
+	transform: translateY(100%);
+}
+.zoomControls > output {
+	grid-area: 2 / 1 / 3 / 3;
+	margin-top: -0.4em;
+	font-size: small;
 }
 
 .boxModelKey {
