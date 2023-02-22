@@ -12,5 +12,5 @@ export default defineConfig({
     // produce sourcemaps for debug builds
     sourcemap: process.env.NODE_ENV === "production" ? false : true
   },
-  base: process.env.NODE_ENV === "production" ? "/CSS-Canvas/" : "/"
+  base: "/"
 });
