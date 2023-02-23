@@ -128,8 +128,9 @@ class HTMLGenerator {
 						padding-right: ${options.marginRight};
 						padding-bottom: ${options.marginBottom};
 						padding-left: ${options.marginLeft};
-						font-family: ${options.fontFamily || 'inherit'};
-						font-size: ${options.fontSize || 'inherit'};
+						transition: ${options.transition ?? 'inherit'};
+						font-family: ${options.fontFamily ?? 'inherit'};
+						font-size: ${options.fontSize ?? 'inherit'};
 					"
 				>
 					<div
@@ -143,6 +144,9 @@ class HTMLGenerator {
 							border-right-width: ${options.borderRight};
 							border-bottom-width: ${options.borderBottom};
 							border-left-width: ${options.borderLeft};
+							transition: inherit;
+							font-family: inherit;
+							font-size: inherit;
 						"
 					>
 						<div
@@ -150,6 +154,9 @@ class HTMLGenerator {
 							style="
 								width: ${options.width};
 								height: ${options.height};
+								transition: inherit;
+								font-family: inherit;
+								font-size: inherit;
 							"
 						>
 							${options.textContent ?? ''}
@@ -358,6 +365,12 @@ class HTMLGenerator {
 				}
 				else if (property === 'transition') {
 					declarations.transition = value;
+				}
+				else if (property === 'font-family') {
+					declarations.fontFamily = value;
+				}
+				else if (property === 'font-size') {
+					declarations.fontSize = value;
 				}
 			});
 
