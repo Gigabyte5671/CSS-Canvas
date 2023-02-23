@@ -23,7 +23,8 @@ class HTMLGenerator {
 		this.error.value = false;
 		this.input.value = css;
 		this.output.value = this.parse(css);
-		this.#updateShadowDom(this.output.value, css);
+		const cssWithBangsRemoved = css.replaceAll(/!(.*[\w\d]+)/uig, '$1');
+		this.#updateShadowDom(this.output.value, cssWithBangsRemoved);
 	}
 
 	parse (css: string): string {
@@ -59,6 +60,9 @@ class HTMLGenerator {
 			// @ts-expect-error: 'selectors' does exist on 'rule'.
 			let condensedSelectors = rule.selectors.map((selector: string) => {
 				if (selector === '*') {
+					return '';
+				}
+				if (selector.charAt(0) === '!') {
 					return '';
 				}
 				const selectorWithoutPseudos = selector.replaceAll(/:{1,2}[\w]+/uig, '');

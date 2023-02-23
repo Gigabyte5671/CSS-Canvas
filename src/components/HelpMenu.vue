@@ -35,6 +35,7 @@ export default defineComponent({
 			<h3>Special properties</h3>
 			<p>All CSS features that your browser supports are available to you. However, CSS Canvas also has a few extra properties that enable you to add more content to your creations:</p>
 			<ul>
+				<li>Start any selector with a bang (<span class="code">!</span>) to prevent it from being rendered as an element.</li>
 				<li><span class="code">inner-text</span> Adds text content to the selected element.</li>
 				<li><span class="code">src</span> Adds a source attribute to the selected element.</li>
 				<li><span class="code">href</span> Adds an href attribute to the selected element.</li>
