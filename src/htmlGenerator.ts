@@ -98,6 +98,7 @@ class HTMLGenerator {
 	}
 
 	#createBox (options: {
+		position: string,
 		sizing: string,
 		width: string,
 		height: string,
@@ -124,6 +125,7 @@ class HTMLGenerator {
 		return `<div
 					class="CSSCanvasBoxModelMargin"
 					style="
+						position: ${options.position};
 						padding-top: ${options.marginTop};
 						padding-right: ${options.marginRight};
 						padding-bottom: ${options.marginBottom};
@@ -178,6 +180,7 @@ class HTMLGenerator {
 
 		stylesheet.stylesheet?.rules.forEach((rule) => {
 			let declarations = {
+				position: '',
 				sizing: 'border-box',
 				width: '',
 				height: '',
@@ -203,6 +206,9 @@ class HTMLGenerator {
 			rule.declarations.forEach(({ property, value }: { property: string, value: string } ) => {
 				if (property === 'inner-text') {
 					declarations.textContent = value;
+				}
+				if (property === 'position') {
+					declarations.position = value;
 				}
 				else if (property === 'width') {
 					declarations.width = value;
