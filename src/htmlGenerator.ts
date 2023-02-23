@@ -20,6 +20,7 @@ class HTMLGenerator {
 	}
 
 	set (css: string): void {
+		this.error.value = false;
 		this.input.value = css;
 		this.output.value = this.parse(css);
 		this.#updateShadowDom(this.output.value, css);
@@ -33,6 +34,7 @@ class HTMLGenerator {
 		try {
 			stylesheet = CSS.parse(css);
 		} catch (e) {
+			this.error.value = true;
 			console.warn('CSS Error:', e);
 		}
 
@@ -84,6 +86,7 @@ class HTMLGenerator {
 		try {
 			parserOutput = expand(emmetString);
 		} catch (e) {
+			this.error.value = true;
 			console.warn('Emmet Error:', e);
 		}
 
@@ -158,6 +161,7 @@ class HTMLGenerator {
 		try {
 			stylesheet = CSS.parse(css);
 		} catch (e) {
+			this.error.value = true;
 			console.warn('CSS Error:', e);
 		}
 
