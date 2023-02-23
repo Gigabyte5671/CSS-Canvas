@@ -102,6 +102,7 @@ class HTMLGenerator {
 		marginRight: string,
 		marginBottom: string,
 		marginLeft: string,
+		transition?: string,
 		fontSize?: string,
 		fontFamily?: string,
 		textContent?: string
@@ -173,6 +174,7 @@ class HTMLGenerator {
 				marginRight: '',
 				marginBottom: '',
 				marginLeft: '',
+				transition: '',
 				fontSize: '',
 				fontFamily: '',
 				textContent: ''
@@ -341,6 +343,9 @@ class HTMLGenerator {
 				}
 				else if (property === 'border-left-width') {
 					declarations.borderLeft = value;
+				}
+				else if (property === 'transition') {
+					declarations.transition = value;
 				}
 			});
 
