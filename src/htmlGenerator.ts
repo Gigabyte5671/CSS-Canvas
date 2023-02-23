@@ -8,6 +8,7 @@ class HTMLGenerator {
 	input = ref('');
 	output = ref('');
 	error = ref(false);
+	#shadowDomElements = [] as HTMLElement[];
 
 	constructor () {}
 
@@ -21,6 +22,7 @@ class HTMLGenerator {
 	set (css: string): void {
 		this.input.value = css;
 		this.output.value = this.parse(css);
+		this.#updateShadowDom(this.output.value, css);
 	}
 
 	parse (css: string): string {
@@ -34,8 +36,7 @@ class HTMLGenerator {
 			console.warn('CSS Error:', e);
 		}
 
-		stylesheet.stylesheet?.rules.forEach((rule) => {
-			let declarations = '';
+		stylesheet.stylesheet?.rules.forEach((rule, index) => {
 			let textContent = '';
 			let otherProps = [] as string[];
 			// @ts-expect-error: 'declarations' does exist on 'rule'.
@@ -52,14 +53,28 @@ class HTMLGenerator {
 					otherProps.push(`[href="${declaration.value}"]`);
 					return;
 				}
-				declarations += `${declaration.property}:${declaration.value};`;
 			});
 			// @ts-expect-error: 'selectors' does exist on 'rule'.
-			console.log(rule.selectors);
-			// @ts-expect-error: 'selectors' does exist on 'rule'.
-			console.log(rule.selectors.join('').split(' ').join('>'));
-			// @ts-expect-error: 'selectors' does exist on 'rule'.
-			emmetString += `${rule.selectors.join('').split(' ').join('>')}[style="${declarations}"]${otherProps.join('')}{${textContent}}`;
+			let condensedSelectors = rule.selectors.map((selector: string) => {
+				return selector.split(' ').reduce((previousSegment, currentSegment) => {
+					if (
+						previousSegment.lastIndexOf('>') >= previousSegment.length - 1
+						|| currentSegment.charAt(0) === '>'
+					) {
+						return previousSegment + currentSegment;
+					}
+					return previousSegment + '>' + currentSegment;
+				});
+			}) as string[];
+			if (condensedSelectors.length > 1) {
+				return;
+			}
+			condensedSelectors.forEach((selector) => {
+				if (selector.charAt(selector.length - 1) === '>') {
+					selector = selector.slice(0, selector.length - 1);
+				}
+				emmetString += `${index > 0 ? '+' : ''}${selector}${otherProps.join('')}{${textContent}}`;
+			});
 		});
 
 		try {
@@ -337,6 +352,25 @@ class HTMLGenerator {
 
 	get boxModel (): string {
 		return this.computeBoxModel(this.input.value);
+	}
+
+	applyShadowDom (element: HTMLElement): void {
+		element.attachShadow({ mode: "open" });
+		this.#shadowDomElements.push(element);
+		this.#updateShadowDom(this.output.value, this.input.value);
+	}
+
+	#updateShadowDom (html: string, css: string): void {
+		this.#shadowDomElements.forEach((element) => {
+			const shadow = element.shadowRoot;
+			if (!shadow) {
+				return;
+			}
+			const stylesheet = new CSSStyleSheet();
+			stylesheet.replaceSync(css);
+			shadow.adoptedStyleSheets = [stylesheet];
+			shadow.innerHTML = html;
+		});
 	}
 
 	clear (): void {

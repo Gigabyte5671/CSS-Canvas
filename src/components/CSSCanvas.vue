@@ -75,6 +75,9 @@ export default defineComponent({
 				this.zoom.value = this.zoom.min;
 			}
 		}
+	},
+	mounted() {
+		HTMLGenerator.getInstance().applyShadowDom(this.$refs['mainOutput'] as HTMLOutputElement);
 	}
 });
 </script>
@@ -93,14 +96,14 @@ export default defineComponent({
 		@mouseup="endResize()"
 		@touchcancel="endResize()"
 	>
-		<output
+		<div
+			ref="mainOutput"
 			class="output"
 			:style="{
 				height: canvasHeight,
 				transform: zoomScale
 			}"
-			v-html="HTMLGenerator.getInstance().output.value"
-		></output>
+		></div>
 		<div
 			class="resizer"
 			@mousedown="startResize()"
@@ -150,7 +153,8 @@ export default defineComponent({
 	overflow: hidden;
 	user-select: none;
 }
-.cssCanvas output {
+.cssCanvas > output,
+.cssCanvas > .output {
 	display: flex;
 	justify-content: center;
 	align-items: center;
