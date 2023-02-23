@@ -56,7 +56,8 @@ class HTMLGenerator {
 			});
 			// @ts-expect-error: 'selectors' does exist on 'rule'.
 			let condensedSelectors = rule.selectors.map((selector: string) => {
-				return selector.split(' ').reduce((previousSegment, currentSegment) => {
+				const selectorWithoutPseudos = selector.replaceAll(/:{1,2}[\w]+/uig, '');
+				return selectorWithoutPseudos.split(' ').reduce((previousSegment, currentSegment) => {
 					if (
 						previousSegment.lastIndexOf('>') >= previousSegment.length - 1
 						|| currentSegment.charAt(0) === '>'
