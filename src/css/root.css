@@ -13,6 +13,7 @@
 	--color-text: #fff;
 	--color-background: #1e1e1e;
 	--color-border: #8888;
+	--color-border-light: #8883;
 }
 
 *,
@@ -61,6 +62,7 @@ button,
 	padding: 0.25em;
 	color: var(--color-text);
 	font-size: 1.25rem;
+	border: 1px solid var(--color-border-light);
 	border-radius: 5px;
 	transition: 0.1s ease background-color;
 	cursor: pointer;
@@ -69,6 +71,15 @@ button:hover,
 .button:hover {
 	/* background-color: #396cd8; */
 	background-color: #8884;
+}
+button.disable,
+.button.disable {
+	user-select: none;
+	pointer-events: none;
+}
+button:has(> img:only-child, > span:only-child),
+.button:has(> img:only-child, > span:only-child) {
+	border: unset;
 }
 
 button > img,
