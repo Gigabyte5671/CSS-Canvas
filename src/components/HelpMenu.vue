@@ -21,7 +21,7 @@ export default defineComponent({
 <template>
 	<div
 		v-if="modelValue"
-		class="helpMenu"
+		class="popup"
 		@click="hide()"
 	>
 		<article @click.stop="">
@@ -47,29 +47,7 @@ export default defineComponent({
 </template>
 
 <style scoped>
-.helpMenu {
-	position: absolute;
-	z-index: 10;
-	inset: 0;
-	display: flex;
-	padding: 2rem 1rem;
-	background-color: #000a;
-	overflow-y: auto;
-}
-.helpMenu > article {
-	max-width: 400px;
-	margin: auto;
-	padding: 0 3ch 1em;
-	background-color: var(--color-background);
-	border-radius: 5px;
-}
-.helpMenu > article > .close {
-	position: absolute;
-	z-index: 2;
-	top: 0.5rem;
-	right: 0.5rem;
-}
-.helpMenu span.code {
+.popup span.code {
 	padding: 0.2em 1ch;
 	color: black;
 	font-family: monospace;

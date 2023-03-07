@@ -7,13 +7,17 @@ import LZString from 'lz-string';
 import Editor from './components/Editor.vue';
 import CSSCanvas from './components/CSSCanvas.vue';
 import HelpMenu from './components/HelpMenu.vue';
+import LoginMenu from './components/LoginMenu.vue';
+import RegisterMenu from './components/RegisterMenu.vue';
 
 export default defineComponent({
 	name: 'App',
 	components: {
 		Editor,
 		CSSCanvas,
-		HelpMenu
+		HelpMenu,
+		LoginMenu,
+		RegisterMenu
 	},
 	data() {
 		return {
@@ -26,7 +30,9 @@ export default defineComponent({
 			resizing: false,
 			colorMode: false,
 			showHelp: false,
-			shareLinkCopied: false
+			showLogin: false,
+			showRegister: false,
+			shareLinkCopied: false,
 		};
 	},
 	computed: {
@@ -113,6 +119,13 @@ export default defineComponent({
 			window.setTimeout(() => {
 				this.shareLinkCopied = false;
 			}, 2000);
+		},
+		logout (): void {
+			signOut(FirebaseHandler.auth).then(() => {
+				// Logout successful.
+			}).catch((error) => {
+				console.warn('Auth logout failed:', error);
+			});
 		}
 	},
 	mounted() {
@@ -163,9 +176,20 @@ export default defineComponent({
 		>
 			<span class="material-symbols-rounded">{{ colorMode ? 'dark_mode' : 'light_mode' }}</span>
 		</button>
-		<a class="button" href="https://github.com/Gigabyte5671/CSS-Canvas" target="_blank" title="CSS Canvas on GitHub">
-			<img src="https://simpleicons.org/icons/github.svg" alt="GitHub logo" style="filter: invert(1);">
-		</a>
+		<button
+			v-if="FirebaseHandler.user.value"
+			title="Logout"
+			@click="logout()"
+		>
+			<span class="material-symbols-rounded">logout</span>
+		</button>
+		<button
+			v-else
+			title="Login"
+			@click="showLogin = true"
+		>
+			<span class="material-symbols-rounded">login</span>
+		</button>
 	</nav>
 	<main
 		@mousemove="resize($event.x, $event.target)"
@@ -192,6 +216,8 @@ export default defineComponent({
 		/>
 	</main>
 	<HelpMenu v-model="showHelp" />
+	<LoginMenu v-model="showLogin" @signup="showRegister = true" @success="" />
+	<RegisterMenu v-model="showRegister" @login="showLogin = true" />
 </template>
 
 <style scoped>
