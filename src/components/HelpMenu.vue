@@ -35,13 +35,13 @@ export default defineComponent({
 			<h3>Special properties</h3>
 			<p>All CSS features that your browser supports are available to you. However, CSS Canvas also has a few extra properties that enable you to add more content to your creations:</p>
 			<ul>
-				<li>Start any selector with a bang (<span class="code">!</span>) to prevent it from being rendered as an element.</li>
-				<li><span class="code">inner-text</span> Adds text content to the selected element.</li>
-				<li><span class="code">src</span> Adds a source attribute to the selected element.</li>
-				<li><span class="code">href</span> Adds an href attribute to the selected element.</li>
+				<li>Start any selector with a bang (<span class="code selector">!</span>) to prevent it from being rendered as an element.</li>
+				<li><span class="code property">inner-text</span> Adds text content to the selected element.</li>
+				<li><span class="code property">src</span> Adds a source attribute to the selected element.</li>
+				<li><span class="code property">href</span> Adds an href attribute to the selected element.</li>
 			</ul>
 			<br>
-			<p>Have fun!</p>
+			<p>Have fun! ❤️</p>
 		</article>
 	</div>
 </template>
@@ -49,9 +49,14 @@ export default defineComponent({
 <style scoped>
 .popup span.code {
 	padding: 0.2em 1ch;
-	color: black;
 	font-family: monospace;
-	background-color: #888;
+	border: 1px solid #888;
 	border-radius: 5px;
+}
+.popup span.code.selector {
+	color: #cc99cd;
+}
+.popup span.code.property {
+	color: #f8c555;
 }
 </style>
