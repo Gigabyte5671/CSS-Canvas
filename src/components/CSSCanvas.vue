@@ -77,7 +77,7 @@ export default defineComponent({
 		}
 	},
 	mounted() {
-		HTMLGenerator.getInstance().applyShadowDom(this.$refs['mainOutput'] as HTMLOutputElement);
+		HTMLGenerator.applyShadowDom(this.$refs['mainOutput'] as HTMLOutputElement);
 	}
 });
 </script>
@@ -117,7 +117,7 @@ export default defineComponent({
 				height: boxModelHeight,
 				transform: zoomScale
 			}"
-			v-html="HTMLGenerator.getInstance().boxModel"
+			v-html="HTMLGenerator.boxModel"
 		></output>
 		<div
 			class="zoomControls"

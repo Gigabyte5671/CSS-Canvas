@@ -72,13 +72,13 @@ export default defineComponent({
 		createNewProject (): void {
 			let confirmation = true;
 			if (
-				HTMLGenerator.getInstance().input.value.length > 0
+				HTMLGenerator.input.value.length > 0
 				&& !PersistentStorage.projectSaved
 			) {
 				confirmation = window.confirm('You have unsaved changes. Are you sure you want to create a new project?');
 			}
 			if (confirmation) {
-				HTMLGenerator.getInstance().clear();
+				HTMLGenerator.clear();
 				PersistentStorage.input = '';
 				PersistentStorage.title = 'Untitled';
 				this.$forceUpdate();
@@ -86,8 +86,8 @@ export default defineComponent({
 		},
 		async saveOutput (): Promise<void> {
 			// Create the output files.
-			const cssFile = new File([HTMLGenerator.getInstance().input.value], 'index.css', { type: 'text/css' });
-			const htmlFile = new File([HTMLGenerator.getInstance().output.value], 'index.html', { type: 'text/html' });
+			const cssFile = new File([HTMLGenerator.input.value], 'index.css', { type: 'text/css' });
+			const htmlFile = new File([HTMLGenerator.output.value], 'index.html', { type: 'text/html' });
 
 			// Create zip file.
 			const zip = new JSZip();
@@ -107,7 +107,7 @@ export default defineComponent({
 			PersistentStorage.projectSaved = true;
 		},
 		share (): void {
-			const compressedCSS = LZString.compressToBase64(HTMLGenerator.getInstance().input.value);
+			const compressedCSS = LZString.compressToBase64(HTMLGenerator.input.value);
 			navigator.clipboard.writeText(`https://gigabyte5671.github.io/CSS-Canvas/?css=${compressedCSS}`);
 			this.shareLinkCopied = true;
 			window.setTimeout(() => {
@@ -127,7 +127,7 @@ export default defineComponent({
 		if (/^\?input=/i.test(search)) {
 			PersistentStorage.projectSaved = true;
 			PersistentStorage.disable();
-			HTMLGenerator.getInstance().set(LZString.decompressFromBase64(search.split('?css=')[1]) ?? '');
+			HTMLGenerator.set(LZString.decompressFromBase64(search.split('?css=')[1]) ?? '');
 		}
 	}
 });

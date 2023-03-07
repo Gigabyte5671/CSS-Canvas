@@ -8,10 +8,13 @@ class HTMLGenerator {
 	input = ref('');
 	output = ref('');
 	error = ref(false);
-	#shadowDomElements = [] as HTMLElement[];
+	private shadowDomElements = [] as HTMLElement[];
 
 	constructor () {}
 
+	/**
+	 * Get a reference to the singleton instance of the HTMLGenerator class.
+	 */
 	static getInstance (): HTMLGenerator {
 		if (!HTMLGenerator.instance) {
 			HTMLGenerator.instance = new HTMLGenerator();
@@ -392,12 +395,12 @@ class HTMLGenerator {
 
 	applyShadowDom (element: HTMLElement): void {
 		element.attachShadow({ mode: "open" });
-		this.#shadowDomElements.push(element);
+		this.shadowDomElements.push(element);
 		this.#updateShadowDom(this.output.value, this.input.value);
 	}
 
 	#updateShadowDom (html: string, css: string): void {
-		this.#shadowDomElements.forEach((element) => {
+		this.shadowDomElements.forEach((element) => {
 			const shadow = element.shadowRoot;
 			if (!shadow) {
 				return;
@@ -414,4 +417,4 @@ class HTMLGenerator {
 	}
 }
 
-export default HTMLGenerator;
+export default HTMLGenerator.getInstance();

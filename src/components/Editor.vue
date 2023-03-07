@@ -20,10 +20,10 @@ export default defineComponent({
 	computed: {
 		code: {
 			get (): string {
-				return HTMLGenerator.getInstance().input.value;
+				return HTMLGenerator.input.value;
 			},
 			set (value: string) {
-				HTMLGenerator.getInstance().set(value);
+				HTMLGenerator.set(value);
 				this.saveToPersistentStorage(value);
 			}
 		}
@@ -43,7 +43,7 @@ export default defineComponent({
 </script>
 
 <template>
-	<div class="editorContainer" :class="{ error: HTMLGenerator.getInstance().error.value }">
+	<div class="editorContainer" :class="{ error: HTMLGenerator.error.value }">
 		<PrismEditor
 			class="editor"
 			line-numbers
