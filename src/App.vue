@@ -1,3 +1,7 @@
+<script setup lang="ts">
+import FirebaseHandler from './firebase';
+</script>
+
 <script lang="ts">
 import { defineComponent } from 'vue';
 import HTMLGenerator from './htmlGenerator';
@@ -9,6 +13,7 @@ import CSSCanvas from './components/CSSCanvas.vue';
 import HelpMenu from './components/HelpMenu.vue';
 import LoginMenu from './components/LoginMenu.vue';
 import RegisterMenu from './components/RegisterMenu.vue';
+import { signOut } from "firebase/auth";
 
 export default defineComponent({
 	name: 'App',
