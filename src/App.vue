@@ -177,14 +177,14 @@ export default defineComponent({
 	<nav>
 		<img class="logo" src="./assets/logo-small.webp" alt="CSS Canvas logo" title="CSS Canvas">
 		<input type="text" class="projectTitle" v-model="projectTitle">
-		<button title="New" @click="createNewProject()">
+		<button v-if="!FirebaseHandler.user.value" title="New" @click="createNewProject()">
 			<span class="material-symbols-rounded">add_box</span>
 		</button>
 		<button title="Download" @click="downloadOutput()">
 			<span class="material-symbols-rounded">cloud_download</span>
 		</button>
 		<Transition>
-			<button v-if="shareLinkCopied" title="Link copied to clipboard" @click.stop="">
+			<button v-if="shareLinkCopied" class="disable" title="Link copied to clipboard" @click.stop="">
 				<span class="material-symbols-rounded">done</span>
 			</button>
 			<button v-else title="Share" @click="share()">
