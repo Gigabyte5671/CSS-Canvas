@@ -3,7 +3,7 @@ import FirebaseHandler from './firebase';
 </script>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, watch } from 'vue';
 import HTMLGenerator from './htmlGenerator';
 import PersistentStorage from './persistentStorage';
 import JSZip from 'jszip';
@@ -15,6 +15,7 @@ import HelpMenu from './components/HelpMenu.vue';
 import LoginMenu from './components/LoginMenu.vue';
 import RegisterMenu from './components/RegisterMenu.vue';
 import { signOut } from "firebase/auth";
+import { collection, doc, getDocs, addDoc, updateDoc, deleteDoc } from "firebase/firestore";
 
 interface CSSProject {
 	id: string,
@@ -100,22 +101,104 @@ export default defineComponent({
 		endResize (): void {
 			this.resizing = false;
 		},
-		createNewProject (): void {
+		async loadProjects (): Promise<void> {
+			// Set the loading state for the UI.
+			this.loadingProjects = true;
+			// 
+			if (FirebaseHandler.user.value) {
+				// Fetch the user's collection.
+				const c = collection(FirebaseHandler.database, FirebaseHandler.user.value.uid);
+				// Load all projects in their collection.
+				const querySnapshot = await getDocs(c);
+				this.projects = [];
+				querySnapshot.forEach((doc) => {
+					const data = doc.data();
+					const project = data as CSSProject;
+					project.id = doc.id;
+					this.projects.push(project);
+				});
+				// Sort the projects by date, so that the most recent appear at the top of the list.
+				this.projects.sort((a, b) => b.date - a.date);
+				// If the user has no projects...
+				if (this.projects.length <= 0) {
+					if (HTMLGenerator.input.value.length > 0 && !PersistentStorage.projectSaved) {
+						// ...create one based on the currently open project.
+						const docReference = await addDoc(
+							collection(FirebaseHandler.database, FirebaseHandler.user.value.uid),
+							{
+								id: 'NEWPROJECT',
+								title: PersistentStorage.title,
+								date: Date.now(),
+								link: '',
+								css: LZString.compressToBase64(HTMLGenerator.input.value),
+								settings: {
+									mode: this.colorMode,
+									zoom: 1,
+									ratios: {
+										editor: this.panelRatio.value,
+										canvas: 1
+									}
+								}
+							} as CSSProject
+						);
+						await updateDoc(docReference, { id: docReference.id });
+					} else {
+						// ...create a new, blank project.
+						this.createNewProject();
+					}
+				}
+			}
+			// Set the loading state for the UI.
+			this.loadingProjects = false;
+		},
+		async createNewProject (): Promise<void> {
 			let confirmation = true;
-			if (
-				HTMLGenerator.input.value.length > 0
-				&& !PersistentStorage.projectSaved
-			) {
+			if (HTMLGenerator.input.value.length > 0 && !PersistentStorage.projectSaved) {
 				confirmation = window.confirm('You have unsaved changes. Are you sure you want to create a new project?');
 			}
 			if (confirmation) {
 				HTMLGenerator.clear();
 				PersistentStorage.input = '';
 				PersistentStorage.title = 'Untitled';
+				if (FirebaseHandler.user.value) {
+					this.loadingProjects = true;
+					const docReference = await addDoc(
+						collection(FirebaseHandler.database, FirebaseHandler.user.value.uid),
+						{
+							id: 'NEWPROJECT',
+							title: 'Untitled',
+							date: Date.now(),
+							link: '',
+							css: '',
+							settings: {
+								mode: this.colorMode,
+								zoom: 1,
+								ratios: {
+									editor: this.panelRatio.value,
+									canvas: 1
+								}
+							}
+						} as CSSProject
+					);
+					await updateDoc(docReference, { id: docReference.id });
+					await this.loadProjects();
+					this.loadingProjects = false;
+				}
 				this.$forceUpdate();
 			}
 		},
 		async deleteProject (projectId: string): Promise<void> {
+			this.loadingProjects = true;
+			let confirmation = window.confirm('Are you sure you want to delete this project?');
+			if (confirmation && FirebaseHandler.user.value && projectId) {
+				try {
+					await deleteDoc(doc(FirebaseHandler.database, FirebaseHandler.user.value.uid, projectId));
+				} catch (error) {
+					console.warn('Delete project failed:', error);
+				}
+				this.loadProjects();
+			}
+			this.loadingProjects = false;
 		},
 		async downloadOutput (): Promise<void> {
 			// Create the output files.
@@ -171,6 +254,9 @@ export default defineComponent({
 			PersistentStorage.disable();
 			HTMLGenerator.set(LZString.decompressFromBase64(search.split('?css=')[1]) ?? '');
 		}
+
+		// Reload the projects list when the user logs in/out.
+		watch(FirebaseHandler.user, this.loadProjects);
 	}
 });
 </script>
@@ -263,7 +349,7 @@ export default defineComponent({
 	</main>
 	<HelpMenu v-model="showHelp" />
 	<LoginMenu v-model="showLogin" @signup="showRegister = true" @success="" />
-	<RegisterMenu v-model="showRegister" @login="showLogin = true" />
+	<RegisterMenu v-model="showRegister" @login="showLogin = true" @success="" />
 </template>
 
 <style scoped>
