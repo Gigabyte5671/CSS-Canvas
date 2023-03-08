@@ -120,12 +120,14 @@ export default defineComponent({
 		async downloadOutput (): Promise<void> {
 			// Create the output files.
 			const cssFile = new File([HTMLGenerator.input.value], 'index.css', { type: 'text/css' });
-			const htmlFile = new File([HTMLGenerator.output.value], 'index.html', { type: 'text/html' });
+			const htmlFile = new File([
+				`<!DOCTYPE html>\n<html lang="en">\n\t<head>\n\t\t<meta charset="UTF-8">\n\t\t<meta http-equiv="X-UA-Compatible" content="IE=edge">\n\t\t<meta name="viewport" content="width=device-width, initial-scale=1.0">\n\t\t<title>${PersistentStorage.title}</title>\n\t\t<link rel="stylesheet" href="index.css">\n\t</head>\n\t<body style="display:flex;">\n<!--Your component-->${HTMLGenerator.output.value}\n\t</body>\n</html>`
+			], 'index.html', { type: 'text/html' });
 
 			// Create zip file.
 			const zip = new JSZip();
-			zip.file(`${PersistentStorage.title}.css`, cssFile);
-			zip.file(`${PersistentStorage.title}.html`, htmlFile);
+			zip.file('index.css', cssFile);
+			zip.file('index.html', htmlFile);
 			const zipFile = await zip.generateAsync({ type: 'blob' })
 
 			// Create download link.
