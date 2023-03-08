@@ -8,36 +8,53 @@ import { defineComponent } from 'vue';
 export default defineComponent({
 	name: 'CSSCanvas',
 	props: {
-		mode: { type: Boolean, required: false }
+		mode: { type: Boolean, required: false },
+		ratio: { type: Number, required: false, default: 1.25 },
+		zoom: { type: Number, required: false, default: 1 }
 	},
+	emits: ['update:ratio', 'update:zoom'],
 	data() {
 		return {
-			panelRatio: {
+			ratioLimits: {
 				min: 0.2,
 				max: 1.8,
-				default: 1.25,
-				value: 1.25
+				default: 1.25
 			},
 			resizing: false,
-			zoom: {
+			zoomLimits: {
 				min: 0.2,
 				max: 5.0,
-				difference: 0.2,
-				value: 1.0
+				difference: 0.2
 			}
 		}
 	},
 	computed: {
+		ratioModel: {
+			get (): number {
+				return this.ratio;
+			},
+			set (value: number) {
+				this.$emit('update:ratio', value);
+			}
+		},
 		canvasHeight (): string {
-			const height = 50 * this.panelRatio.value;
+			const height = 50 * this.ratioModel;
 			return `${height}%`;
 		},
 		boxModelHeight (): string {
-			const height = 100 - 50 * this.panelRatio.value;
+			const height = 100 - 50 * this.ratioModel;
 			return `${height}%`;
 		},
+		zoomModel: {
+			get (): number {
+				return this.zoom;
+			},
+			set (value: number) {
+				this.$emit('update:zoom', value);
+			}
+		},
 		zoomScale (): string {
-			return `scale(${this.zoom.value * 100}%)`;
+			return `scale(${this.zoomModel * 100}%)`;
 		}
 	},
 	methods: {
@@ -54,9 +71,9 @@ export default defineComponent({
 				const navRectangle = document.querySelector('nav')?.getBoundingClientRect();
 				if (navRectangle && mainElement && 'clientHeight' in mainElement) {
 					const ratio = (position - navRectangle.height) / (mainElement.clientHeight / 2);
-					this.panelRatio.value = ratio < this.panelRatio.min ? this.panelRatio.min :
-											ratio > this.panelRatio.max ? this.panelRatio.max :
-											ratio;
+					this.ratioModel = ratio < this.ratioLimits.min ? this.ratioLimits.min :
+									  ratio > this.ratioLimits.max ? this.ratioLimits.max :
+									  ratio;
 				}
 			}
 		},
@@ -64,16 +81,18 @@ export default defineComponent({
 			this.resizing = false;
 		},
 		zoomIn (): void {
-			this.zoom.value += this.zoom.difference;
-			if (this.zoom.value > this.zoom.max) {
-				this.zoom.value = this.zoom.max;
+			if (this.zoomModel + this.zoomLimits.difference > this.zoomLimits.max) {
+				this.zoomModel = this.zoomLimits.max;
+				return;
 			}
+			this.zoomModel += this.zoomLimits.difference;
 		},
 		zoomOut (): void {
-			this.zoom.value -= this.zoom.difference;
-			if (this.zoom.value < this.zoom.min) {
-				this.zoom.value = this.zoom.min;
+			if (this.zoomModel - this.zoomLimits.difference < this.zoomLimits.min) {
+				this.zoomModel = this.zoomLimits.min;
+				return;
 			}
+			this.zoomModel -= this.zoomLimits.difference;
 		}
 	},
 	mounted() {
@@ -108,7 +127,7 @@ export default defineComponent({
 			class="resizer"
 			@mousedown="startResize()"
 			@touchstart="startResize()"
-			@dblclick="panelRatio.value = panelRatio.default"
+			@dblclick="ratioModel = ratioLimits.default"
 		>
 			<span class="hitbox"></span>
 		</div>
@@ -129,7 +148,7 @@ export default defineComponent({
 			<button title="Zoom in" @click="zoomIn()">
 				<span class="material-symbols-rounded">add</span>
 			</button>
-			<output>{{ (zoom.value * 100).toFixed(0) }}%</output>
+			<output>{{ (zoomModel * 100).toFixed(0) }}%</output>
 		</div>
 		<div class="boxModelKey">
 			<p><span style="background: #87b2bc;"></span>&nbsp;&nbsp;Content</p>

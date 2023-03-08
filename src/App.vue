@@ -34,8 +34,10 @@ export default defineComponent({
 				min: 0.2,
 				max: 1.8,
 				default: 1,
-				value: 1
+				value: 1,
+				canvas: 1.25
 			},
+			canvasZoom: 1,
 			resizing: false,
 			colorMode: false,
 			showHelp: false,
@@ -120,10 +122,10 @@ export default defineComponent({
 								css: LZString.compressToBase64(HTMLGenerator.input.value),
 								settings: {
 									mode: this.colorMode,
-									zoom: 1,
+									zoom: this.canvasZoom,
 									ratios: {
 										editor: this.panelRatio.value,
-										canvas: 1
+										canvas: this.panelRatio.canvas
 									}
 								}
 							} as CSSProject
@@ -159,10 +161,10 @@ export default defineComponent({
 							css: '',
 							settings: {
 								mode: this.colorMode,
-								zoom: 1,
+								zoom: this.canvasZoom,
 								ratios: {
 									editor: this.panelRatio.value,
-									canvas: 1
+									canvas: this.panelRatio.canvas
 								}
 							}
 						} as CSSProject
@@ -338,6 +340,8 @@ export default defineComponent({
 		<CSSCanvas
 			:style="{ width: canvasWidth }"
 			:mode="colorMode"
+			v-model:ratio="panelRatio.canvas"
+			v-model:zoom="canvasZoom"
 		/>
 	</main>
 	<HelpMenu v-model="showHelp" />
