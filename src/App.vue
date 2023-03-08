@@ -86,13 +86,14 @@ export default defineComponent({
 		},
 		resize (position: number, target: EventTarget | null): void {
 			if (this.resizing && target) {
-				const t = target as HTMLElement;
-				let mainElement = t as HTMLElement | null;
+				let mainElement = target as HTMLElement | null;
 				while (mainElement && mainElement?.tagName?.toLowerCase() !== 'main') {
 					mainElement = mainElement.parentElement;
 				}
+				const sidebar = this.$refs['projectLinks'] as HTMLUListElement | undefined;
+				const sidebarWidth = sidebar?.clientWidth ?? 0;
 				if (mainElement && 'clientWidth' in mainElement) {
-					const ratio = position / (mainElement.clientWidth / 2);
+					const ratio = (position - sidebarWidth) / ((mainElement.clientWidth - sidebarWidth) / 2);
 					this.panelRatio.value = ratio < this.panelRatio.min ? this.panelRatio.min :
 											ratio > this.panelRatio.max ? this.panelRatio.max :
 											ratio;
@@ -321,7 +322,7 @@ export default defineComponent({
 		@mouseup="endResize()"
 		@touchcancel="endResize()"
 	>
-		<ul class="projectLinks" :class="{ showProjectLinks: FirebaseHandler.user.value }">
+		<ul class="projectLinks" :class="{ showProjectLinks: FirebaseHandler.user.value }" ref="projectLinks">
 			<li>
 				<button :class="{ disable: loadingProjects }" style="width: 100%;" title="New project" @click="createNewProject()">
 					<span v-if="loadingProjects" class="spinner"></span>
