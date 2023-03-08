@@ -15,6 +15,22 @@ import LoginMenu from './components/LoginMenu.vue';
 import RegisterMenu from './components/RegisterMenu.vue';
 import { signOut } from "firebase/auth";
 
+interface CSSProject {
+	id: string,
+	title: string,
+	date: number,
+	link: string,
+	css: string,
+	settings: {
+		mode: boolean,
+		zoom: number,
+		ratios: {
+			editor: number,
+			canvas: number
+		}
+	}
+}
+
 export default defineComponent({
 	name: 'App',
 	components: {
