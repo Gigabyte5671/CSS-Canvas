@@ -59,6 +59,7 @@ export default defineComponent({
 			shareLinkCopied: false,
 			loadingProjects: false,
 			projects: [] as CSSProject[],
+			currentProject: undefined as CSSProject | undefined
 		};
 	},
 	computed: {
@@ -186,6 +187,12 @@ export default defineComponent({
 				}
 				this.$forceUpdate();
 			}
+		},
+		getProjectDataFromId (projectId: string): CSSProject | undefined {
+			return this.projects.find(project => project.id === projectId);
+		},
+		selectProject (projectId: string): void {
+			this.currentProject = this.getProjectDataFromId(projectId);
 		},
 		async deleteProject (projectId: string): Promise<void> {
 			this.loadingProjects = true;
