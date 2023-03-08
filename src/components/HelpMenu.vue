@@ -40,8 +40,12 @@ export default defineComponent({
 				<li><span class="code property">src</span> Adds a source attribute to the selected element.</li>
 				<li><span class="code property">href</span> Adds an href attribute to the selected element.</li>
 			</ul>
-			<br>
 			<p>Have fun! ❤️</p>
+			<br>
+			<a class="button" style="gap: 1.5ch;font-size: 1rem;" href="https://github.com/Gigabyte5671/CSS-Canvas" target="_blank">
+				<img src="https://cdn.simpleicons.org/github/fff" alt="GitHub logo">
+				CSS Canvas on GitHub
+			</a>
 		</article>
 	</div>
 </template>
