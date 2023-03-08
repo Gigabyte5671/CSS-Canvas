@@ -54,7 +54,8 @@ button,
 	flex-flow: row nowrap;
 	justify-content: center;
 	align-items: center;
-	padding: 0.25em;
+	padding: 0.2em;
+	padding-bottom: 0.3em;
 	color: var(--color-text);
 	font-size: 1.25rem;
 	border: 1px solid var(--color-border-light);
@@ -74,6 +75,7 @@ button.disable,
 }
 button:has(> img:only-child, > span:only-child),
 .button:has(> img:only-child, > span:only-child) {
+	padding: 0.25em;
 	border: unset;
 }
 
@@ -84,8 +86,8 @@ button > img,
 	aspect-ratio: 1;
 }
 
-input,
-button {
+input {
+	border: unset;
 	outline: none;
 }
 
