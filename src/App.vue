@@ -111,7 +111,7 @@ export default defineComponent({
 				this.$forceUpdate();
 			}
 		},
-		async saveOutput (): Promise<void> {
+		async downloadOutput (): Promise<void> {
 			// Create the output files.
 			const cssFile = new File([HTMLGenerator.input.value], 'index.css', { type: 'text/css' });
 			const htmlFile = new File([HTMLGenerator.output.value], 'index.html', { type: 'text/html' });
@@ -174,8 +174,8 @@ export default defineComponent({
 		<button title="New" @click="createNewProject()">
 			<span class="material-symbols-rounded">add_box</span>
 		</button>
-		<button title="Save" @click="saveOutput()">
-			<span class="material-symbols-rounded">save</span>
+		<button title="Download" @click="downloadOutput()">
+			<span class="material-symbols-rounded">cloud_download</span>
 		</button>
 		<Transition>
 			<button v-if="shareLinkCopied" title="Link copied to clipboard" @click.stop="">
