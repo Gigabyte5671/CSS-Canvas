@@ -239,6 +239,8 @@ export default defineComponent({
 		window.addEventListener('keydown', (event) => {
 			if (event.code === 'Escape') {
 				this.showHelp = false;
+				this.showLogin = false;
+				this.showRegister = false;
 			}
 		});
 
