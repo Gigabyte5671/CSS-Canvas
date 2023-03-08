@@ -8,6 +8,7 @@ import HTMLGenerator from './htmlGenerator';
 import PersistentStorage from './persistentStorage';
 import JSZip from 'jszip';
 import LZString from 'lz-string';
+import ProjectLink from './components/ProjectLink.vue';
 import Editor from './components/Editor.vue';
 import CSSCanvas from './components/CSSCanvas.vue';
 import HelpMenu from './components/HelpMenu.vue';
@@ -34,6 +35,7 @@ interface CSSProject {
 export default defineComponent({
 	name: 'App',
 	components: {
+		ProjectLink,
 		Editor,
 		CSSCanvas,
 		HelpMenu,
@@ -54,6 +56,8 @@ export default defineComponent({
 			showLogin: false,
 			showRegister: false,
 			shareLinkCopied: false,
+			loadingProjects: false,
+			projects: [] as CSSProject[],
 		};
 	},
 	computed: {
@@ -110,6 +114,8 @@ export default defineComponent({
 				PersistentStorage.title = 'Untitled';
 				this.$forceUpdate();
 			}
+		},
+		async deleteProject (projectId: string): Promise<void> {
 		},
 		async downloadOutput (): Promise<void> {
 			// Create the output files.
@@ -220,6 +226,23 @@ export default defineComponent({
 		@mouseup="endResize()"
 		@touchcancel="endResize()"
 	>
+		<ul class="projectLinks" :class="{ showProjectLinks: FirebaseHandler.user.value }">
+			<li>
+				<button :class="{ disable: loadingProjects }" style="width: 100%;" title="New project" @click="createNewProject()">
+					<span v-if="loadingProjects" class="spinner"></span>
+					<span v-else class="material-symbols-rounded">add</span>
+				</button>
+			</li>
+			<li v-for="project of projects" :key="project.id">
+				<ProjectLink
+					:title="project.title"
+					:date="project.date"
+					:loading="loadingProjects"
+					@click.stop=""
+					@delete="deleteProject(project.id)"
+				/>
+			</li>
+		</ul>
 		<Editor
 			:style="{ width: editorWidth }"
 		/>
@@ -281,6 +304,31 @@ nav > *:last-child {
 	margin-left: auto;
 }
 
+.projectLinks {
+	display: flex;
+	flex-flow: column nowrap;
+	gap: 0.5rem;
+	width: 0;
+	height: 100%;
+	margin: 0;
+	padding: 0.5rem 0ch 1rem;
+	list-style: none;
+	border-right: 1px solid var(--color-border);
+	opacity: 0;
+	user-select: none;
+	pointer-events: none;
+	transition: 0.4s ease width, 0.4s ease opacity;
+}
+.projectLinks.showProjectLinks {
+	width: 30ch;
+	padding: 0.5rem 1ch 1rem;
+	opacity: 1;
+	user-select: revert;
+	pointer-events: all;
+}
+.projectLinks > li {
+	display: flex;
+}
 
 main {
 	display: flex;
