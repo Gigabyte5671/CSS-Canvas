@@ -29,9 +29,25 @@
 				position: absolute;
 				inset: 0;
 				display: flex;
+				flex-flow: column nowrap;
 				justify-content: center;
 				align-items: center;
 				background: radial-gradient(circle at center, #264de340, transparent 90%);
+			}
+			.cssCanvasPreloader > span.spinner {
+				display: inline-block;
+				width: 1.5rem;
+				height: 1.5rem;
+				color: white;
+				border: 0.4ch solid currentColor;
+				border-right-color: transparent;
+				border-radius: 50%;
+				transform-origin: center;
+				animation: spin 0.8s linear infinite;
+			}
+			@keyframes spin {
+				0%   { transform: rotate(0deg); }
+				100% { transform: rotate(360deg); }
 			}
 		</style>
 		<script type="module" src="/src/main.ts" defer></script>
@@ -39,7 +55,10 @@
 
 	<body id="app">
 		<div class="cssCanvasPreloader">
-			<img src="/logo-small.webp" alt="CSS Canvas logo">
+			<img src="/logo-small.webp" width="200" height="157" alt="CSS Canvas logo">
+			<br>
+			<br>
+			<span class="spinner"></span>
 		</div>
 	</body>
 </html>
