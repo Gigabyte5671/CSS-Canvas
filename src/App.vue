@@ -14,24 +14,9 @@ import CSSCanvas from './components/CSSCanvas.vue';
 import HelpMenu from './components/HelpMenu.vue';
 import LoginMenu from './components/LoginMenu.vue';
 import RegisterMenu from './components/RegisterMenu.vue';
-import { signOut } from "firebase/auth";
-import { collection, doc, getDocs, addDoc, updateDoc, deleteDoc } from "firebase/firestore";
-
-interface CSSProject {
-	id: string,
-	title: string,
-	date: number,
-	link: string,
-	css: string,
-	settings: {
-		mode: boolean,
-		zoom: number,
-		ratios: {
-			editor: number,
-			canvas: number
-		}
-	}
-}
+import { signOut } from 'firebase/auth';
+import { collection, doc, getDocs, addDoc, updateDoc, deleteDoc } from 'firebase/firestore';
+import type { CSSProject } from './datastructure';
 
 export default defineComponent({
 	name: 'App',
