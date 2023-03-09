@@ -1,4 +1,6 @@
 <script setup lang="ts">
+// @ts-expect-error: Prism has no types.
+import { highlight, languages } from 'prismjs/components/prism-core';
 import HTMLGenerator from '../htmlGenerator';
 </script>
 
@@ -6,38 +8,27 @@ import HTMLGenerator from '../htmlGenerator';
 import { defineComponent } from 'vue';
 import { PrismEditor } from 'vue-prism-editor';
 import 'vue-prism-editor/dist/prismeditor.min.css';
-// @ts-expect-error: Prism has no types.
-import { highlight, languages } from 'prismjs/components/prism-core';
 import 'prismjs/components/prism-css';
-import 'prismjs/themes/prism-tomorrow.css'; // import syntax highlighting styles
-import PersistentStorage from '../persistentStorage';
+import 'prismjs/themes/prism-tomorrow.css';
 
 export default defineComponent({
 	name: 'Editor',
+	props: {
+		css: { type: String, required: true, default: '' }
+	},
+	emits: ['update:css'],
 	components: {
 		PrismEditor
 	},
 	computed: {
 		code: {
 			get (): string {
-				return HTMLGenerator.input.value;
+				return this.css;
 			},
 			set (value: string) {
-				HTMLGenerator.set(value);
-				this.saveToPersistentStorage(value);
+				this.$emit('update:css', value);
 			}
 		}
-	},
-	methods: {
-		highlighter (code: string) {
-			return highlight(code, languages.css);
-		},
-		saveToPersistentStorage (value: string): void {
-			PersistentStorage.input = value;
-		}
-	},
-	mounted () {
-		this.code = PersistentStorage.input;
 	}
 });
 </script>
@@ -49,7 +40,7 @@ export default defineComponent({
 			line-numbers
 			:tab-size="1"
 			:insert-spaces="false"
-			:highlight="highlighter"
+			:highlight="(code: string) => highlight(code, languages.css)"
 			v-model="code"
 		/>
 	</div>

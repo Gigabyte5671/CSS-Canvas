@@ -81,6 +81,18 @@ export default defineComponent({
 					}
 				);
 			}
+		},
+		code: {
+			get (): string {
+				const cssContent = FirebaseHandler.projects.value.get(FirebaseHandler.selectedProject.value ?? '')?.css;
+				return LZString.decompressFromBase64(cssContent ?? '') ?? '';
+			},
+			set (value: string) {
+				HTMLGenerator.set(value);
+				PersistentStorage.input = value;
+				void FirebaseHandler.updateProjectValue(FirebaseHandler.selectedProject.value, 'css', LZString.compressToBase64(value));
+				void FirebaseHandler.updateProjectValue(FirebaseHandler.selectedProject.value, 'date', Date.now());
+			}
 		}
 	},
 	methods: {
@@ -333,6 +345,7 @@ export default defineComponent({
 		</ul>
 		<Editor
 			:style="{ width: `${50 * panelRatio.value}%` }"
+			v-model:css="code"
 		/>
 		<div
 			class="resizer"
