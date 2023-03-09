@@ -8,6 +8,7 @@ import { getFirestore, collection, doc, addDoc, query, onSnapshot, updateDoc } f
 import type { Firestore } from 'firebase/firestore';
 import { generateDefaultProject } from './datastructure';
 import type { CSSProject } from './datastructure';
+import PersistentStorage from './persistentStorage';
 
 class FirebaseHandler {
 	static instance: FirebaseHandler;
@@ -47,8 +48,15 @@ class FirebaseHandler {
 			this.projectsUnsubscribe?.();
 			this.projectsUnsubscribe = undefined;
 
-			// Listen to changes in the collection.
+			// Re-enable the local storage if the user logged out.
+			PersistentStorage.enable();
+
+			// If the user logged in.
 			if (user) {
+				// Disable use of local storage.
+				PersistentStorage.disable();
+
+				// Listen to changes in the collection.
 				const q = query(collection(this.database, user.uid));
 				this.projectsUnsubscribe = onSnapshot(q, async (querySnapshot) => {
 					// Set the loading state for the UI.
@@ -90,6 +98,9 @@ class FirebaseHandler {
 					// Set the loading state for the UI.
 					this.loading.value = false;
 				});
+
+				// Clear local storage.
+				PersistentStorage.clear();
 			}
 		});
 	}
