@@ -39,7 +39,7 @@ class FirebaseHandler {
 
 		// Initialize Firebase Authentication and get a reference to the service.
 		this.auth = getAuth(this.app);
-		this.authUnsubscribe = onAuthStateChanged(this.auth, (user) => {
+		this.authUnsubscribe = onAuthStateChanged(this.auth, async (user) => {
 			this.auth = getAuth(this.app);
 			this.user.value = user;
 			console.log(user ? 'Logged in.' : 'Logged out.');
@@ -55,6 +55,19 @@ class FirebaseHandler {
 			if (user) {
 				// Disable use of local storage.
 				PersistentStorage.disable();
+
+				// If a project already exists in local storage at the time of login, save it to a new project.
+				if (PersistentStorage.input.length > 0) {
+					const localProject = generateDefaultProject();
+					localProject.title = PersistentStorage.title;
+					localProject.date = Date.now();
+					localProject.css = PersistentStorage.input;
+					localProject.settings.mode = PersistentStorage.colorMode;
+					await addDoc(
+						collection(this.database, user.uid),
+						localProject
+					);
+				}
 
 				// Listen to changes in the collection.
 				const q = query(collection(this.database, user.uid));
