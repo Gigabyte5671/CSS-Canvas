@@ -137,13 +137,13 @@ export default defineComponent({
 		>
 			<span class="hitbox"></span>
 		</div>
-		<output
-			:style="{
-				height: boxModelHeight,
-				transform: zoomScale
-			}"
-			v-html="HTMLGenerator.boxModel"
-		></output>
+		<output :style="{ height: boxModelHeight }">
+			<div
+				class="inner"
+				:style="{ transform: zoomScale }"
+				v-html="HTMLGenerator.boxModel"
+			></div>
+		</output>
 		<div
 			class="zoomControls"
 			:style="{ bottom: `calc(${boxModelHeight} - 2ch)` }"
@@ -180,6 +180,14 @@ export default defineComponent({
 }
 .cssCanvas > output,
 .cssCanvas > .output {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	width: 100%;
+	height: 100%;
+	overflow: hidden;
+}
+.cssCanvas > output > .inner {
 	display: flex;
 	justify-content: center;
 	align-items: center;
