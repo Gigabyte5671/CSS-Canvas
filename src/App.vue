@@ -50,14 +50,6 @@ export default defineComponent({
 		};
 	},
 	computed: {
-		editorWidth (): string {
-			const width = 50 * this.panelRatio.value;
-			return `${width}%`;
-		},
-		canvasWidth (): string {
-			const width = 100 - 50 * this.panelRatio.value;
-			return `${width}%`;
-		},
 		projectTitle: {
 			get (): string {
 				return PersistentStorage.title;
@@ -329,7 +321,7 @@ export default defineComponent({
 			</li>
 		</ul>
 		<Editor
-			:style="{ width: editorWidth }"
+			:style="{ width: `${50 * panelRatio.value}%` }"
 		/>
 		<div
 			class="resizer"
@@ -340,15 +332,25 @@ export default defineComponent({
 			<span class="hitbox"></span>
 		</div>
 		<CSSCanvas
-			:style="{ width: canvasWidth }"
+			:style="{ width: `${100 - 50 * panelRatio.value}%` }"
 			:mode="colorMode"
 			v-model:ratio="panelRatio.canvas"
 			v-model:zoom="canvasZoom"
 		/>
 	</main>
-	<HelpMenu v-model="showHelp" />
-	<LoginMenu v-model="showLogin" @signup="showRegister = true" @success="" />
-	<RegisterMenu v-model="showRegister" @login="showLogin = true" @success="" />
+	<HelpMenu
+		v-model="showHelp"
+	/>
+	<LoginMenu
+		v-model="showLogin"
+		@signup="showRegister = true"
+		@success=""
+	/>
+	<RegisterMenu
+		v-model="showRegister"
+		@login="showLogin = true"
+		@success=""
+	/>
 </template>
 
 <style scoped>
