@@ -4,6 +4,7 @@ export default class PersistentStorage {
 	static #keys = {
 		editorInput: 'CSSCanvasInput',
 		title: 'CSSCanvasProjectTitle',
+		colorMode: 'CSSCanvasProjectColorMode',
 		projectHasBeenSaved: 'CSSCanvasProjectSaved'
 	};
 
@@ -30,6 +31,22 @@ export default class PersistentStorage {
 			return;
 		}
 		window.localStorage.setItem(this.#keys.title, value);
+		this.projectSaved = false;
+	}
+
+	static get colorMode (): boolean {
+		return Boolean(window.localStorage.getItem(this.#keys.colorMode));
+	}
+
+	static set colorMode (value: boolean) {
+		if (!this.#enabled) {
+			return;
+		}
+		if (value) {
+			window.localStorage.setItem(this.#keys.colorMode, 'true');
+		} else {
+			window.localStorage.removeItem(this.#keys.colorMode);
+		}
 		this.projectSaved = false;
 	}
 

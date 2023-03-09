@@ -3,7 +3,7 @@ import FirebaseHandler from './firebase';
 </script>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, watch } from 'vue';
 import HTMLGenerator from './htmlGenerator';
 import PersistentStorage from './persistentStorage';
 import JSZip from 'jszip';
@@ -39,7 +39,6 @@ export default defineComponent({
 			},
 			canvasZoom: 1,
 			resizing: false,
-			colorMode: false,
 			showHelp: false,
 			showLogin: false,
 			showRegister: false,
@@ -58,6 +57,29 @@ export default defineComponent({
 			set (value: string) {
 				PersistentStorage.title = value;
 				void FirebaseHandler.updateProjectValue(FirebaseHandler.selectedProject.value, 'title', value);
+			}
+		},
+		colorMode: {
+			get (): boolean {
+				const colorMode = FirebaseHandler.user.value && FirebaseHandler.selectedProject.value ?
+								  FirebaseHandler.projects.value?.get(FirebaseHandler.selectedProject.value)?.settings.mode :
+								  undefined;
+				return colorMode ?? PersistentStorage.colorMode;
+			},
+			set (value: boolean) {
+				PersistentStorage.colorMode = value;
+				void FirebaseHandler.updateProjectValue(
+					FirebaseHandler.selectedProject.value,
+					'settings',
+					{
+						mode: value,
+						ratios: {
+							canvas: this.panelRatio.canvas,
+							editor: this.panelRatio.value
+						},
+						zoom: this.canvasZoom
+					}
+				);
 			}
 		}
 	},
@@ -82,7 +104,24 @@ export default defineComponent({
 			}
 		},
 		endResize (): void {
+			if (this.resizing) {
+				void this.updateProjectSettings(FirebaseHandler.selectedProject.value);
+			}
 			this.resizing = false;
+		},
+		async updateProjectSettings (projectId: string | undefined): Promise<void> {
+			await FirebaseHandler.updateProjectValue(
+				projectId,
+				'settings',
+				{
+					mode: this.colorMode,
+					ratios: {
+						canvas: this.panelRatio.canvas,
+						editor: this.panelRatio.value
+					},
+					zoom: this.canvasZoom
+				}
+			);
 		},
 		async createNewProject (force = false): Promise<void> {
 			let confirmation = true;
@@ -119,7 +158,24 @@ export default defineComponent({
 		},
 		selectProject (projectId: string): void {
 			FirebaseHandler.selectedProject.value = projectId;
-			console.log('Selected project:', projectId);
+			// Set the editor's panel ratio.
+			const editorRatio = FirebaseHandler.projects.value.get(FirebaseHandler.selectedProject.value)?.settings.ratios.editor;
+			if (editorRatio) {
+				this.panelRatio.value = editorRatio;
+			}
+			// Set the canvas' panel ratio.
+			const canvasRatio = FirebaseHandler.projects.value.get(FirebaseHandler.selectedProject.value)?.settings.ratios.canvas;
+			if (canvasRatio) {
+				this.panelRatio.canvas = canvasRatio;
+			}
+			// Set the canvas' zoom.
+			const canvasZoom = FirebaseHandler.projects.value.get(FirebaseHandler.selectedProject.value)?.settings.zoom;
+			if (canvasZoom) {
+				this.canvasZoom = canvasZoom;
+			}
+			// Set the CSS content of the editor.
+			const cssContent = FirebaseHandler.projects.value.get(FirebaseHandler.selectedProject.value)?.css;
+			HTMLGenerator.set(LZString.decompressFromBase64(cssContent ?? '') ?? '');
 		},
 		async deleteProject (projectId: string): Promise<void> {
 			this.loadingProjects = true;
@@ -177,6 +233,7 @@ export default defineComponent({
 		}
 	},
 	mounted() {
+		// Allow popup menus to be closed with the `Esc` key.
 		window.addEventListener('keydown', (event) => {
 			if (event.code === 'Escape') {
 				this.showHelp = false;
@@ -192,6 +249,13 @@ export default defineComponent({
 			PersistentStorage.disable();
 			HTMLGenerator.set(LZString.decompressFromBase64(search.split('?css=')[1]) ?? '');
 		}
+
+		// Reload all content and settings for any auto selected project.
+		watch(FirebaseHandler.selectedProject, (projectId) => {
+			if (projectId) {
+				this.selectProject(projectId);
+			}
+		});
 	}
 });
 </script>
