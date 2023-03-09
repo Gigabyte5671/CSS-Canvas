@@ -355,7 +355,7 @@ export default defineComponent({
 			class="resizer"
 			@mousedown="startResize()"
 			@touchstart="startResize()"
-			@dblclick="panelRatio.value = panelRatio.default"
+			@dblclick="{ panelRatio.value = panelRatio.default; updateProjectSettings(FirebaseHandler.selectedProject.value); }"
 		>
 			<span class="hitbox"></span>
 		</div>
@@ -364,6 +364,7 @@ export default defineComponent({
 			:mode="colorMode"
 			v-model:ratio="panelRatio.canvas"
 			v-model:zoom="canvasZoom"
+			@end-resize="updateProjectSettings(FirebaseHandler.selectedProject.value)"
 		/>
 	</main>
 	<HelpMenu

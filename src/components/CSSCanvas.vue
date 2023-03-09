@@ -1,24 +1,27 @@
 <script setup lang="ts">
+import FirebaseHandler from '../firebase';
 import HTMLGenerator from '../htmlGenerator';
 </script>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
+import { generateDefaultProject } from '../datastructure';
+
+const defaultProject = generateDefaultProject();
 
 export default defineComponent({
 	name: 'CSSCanvas',
 	props: {
 		mode: { type: Boolean, required: false },
-		ratio: { type: Number, required: false, default: 1.25 },
-		zoom: { type: Number, required: false, default: 1 }
+		ratio: { type: Number, required: false, default: defaultProject.settings.ratios.canvas },
+		zoom: { type: Number, required: false, default: defaultProject.settings.zoom }
 	},
-	emits: ['update:ratio', 'update:zoom'],
+	emits: ['update:ratio', 'update:zoom', 'end-resize'],
 	data() {
 		return {
 			ratioLimits: {
 				min: 0.2,
-				max: 1.8,
-				default: 1.25
+				max: 1.8
 			},
 			resizing: false,
 			zoomLimits: {
@@ -78,6 +81,9 @@ export default defineComponent({
 			}
 		},
 		endResize (): void {
+			if (this.resizing) {
+				this.$emit('end-resize');
+			}
 			this.resizing = false;
 		},
 		zoomIn (): void {
@@ -127,7 +133,7 @@ export default defineComponent({
 			class="resizer"
 			@mousedown="startResize()"
 			@touchstart="startResize()"
-			@dblclick="ratioModel = ratioLimits.default"
+			@dblclick="{ ratioModel = defaultProject.settings.ratios.canvas; $emit('end-resize'); }"
 		>
 			<span class="hitbox"></span>
 		</div>
