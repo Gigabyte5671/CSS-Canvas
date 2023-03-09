@@ -261,6 +261,7 @@ export default defineComponent({
 					:title="project.title"
 					:date="project.date"
 					:loading="loadingProjects || FirebaseHandler.loading.value"
+					:selected="id === FirebaseHandler.selectedProject.value"
 					@click.stop="selectProject(id)"
 					@delete="deleteProject(id)"
 				/>

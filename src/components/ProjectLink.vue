@@ -6,7 +6,8 @@ export default defineComponent({
 	props: {
 		title: { type: String, required: true },
 		date: { type: Number, required: true },
-		loading: { type: Boolean, required: false }
+		loading: { type: Boolean, required: false },
+		selected: { type: Boolean, required: false }
 	},
 	emits: ['delete'],
 	computed: {
@@ -18,7 +19,7 @@ export default defineComponent({
 </script>
 
 <template>
-	<button class="projectLink" :class="{ loading }">
+	<button class="projectLink" :class="{ loading, selected }">
 		<p>{{ title }}</p>
 		<p>{{ dateString }}</p>
 		<button title="Delete" @click.stop="$emit('delete')">
@@ -37,9 +38,12 @@ export default defineComponent({
 	width: 100%;
 	padding: 0.25em 1ch 0.4em;
 	font-size: 1rem;
-	transition: 0.1s ease background-color, 0.1s ease opacity;
+	transition: 0.1s ease background-color, 0.1s ease border-color, 0.1s ease opacity;
 	cursor: pointer;
 	user-select: none;
+}
+.projectLink.selected {
+	border-color: var(--color-primary-light);
 }
 .projectLink.loading {
 	opacity: 0.5;
