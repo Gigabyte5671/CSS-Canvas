@@ -396,7 +396,7 @@ class HTMLGenerator {
 	applyShadowDom (element: HTMLElement): void {
 		element.attachShadow({ mode: "open" });
 		this.shadowDomElements.push(element);
-		this.#updateShadowDom(this.output.value, this.input.value);
+		this.set(this.input.value);
 	}
 
 	#updateShadowDom (html: string, css: string): void {
