@@ -3,7 +3,7 @@ import FirebaseHandler from './firebase';
 </script>
 
 <script lang="ts">
-import { defineComponent, watch } from 'vue';
+import { defineComponent } from 'vue';
 import HTMLGenerator from './htmlGenerator';
 import PersistentStorage from './persistentStorage';
 import JSZip from 'jszip';
@@ -15,7 +15,7 @@ import HelpMenu from './components/HelpMenu.vue';
 import LoginMenu from './components/LoginMenu.vue';
 import RegisterMenu from './components/RegisterMenu.vue';
 import { signOut } from 'firebase/auth';
-import { collection, doc, getDocs, addDoc, updateDoc, deleteDoc } from 'firebase/firestore';
+import { collection, doc, addDoc, deleteDoc } from 'firebase/firestore';
 import type { CSSProject } from './datastructure';
 
 export default defineComponent({
@@ -44,18 +44,20 @@ export default defineComponent({
 			showLogin: false,
 			showRegister: false,
 			shareLinkCopied: false,
-			loadingProjects: false,
-			projects: [] as CSSProject[],
-			currentProject: undefined as CSSProject | undefined
+			loadingProjects: false
 		};
 	},
 	computed: {
 		projectTitle: {
 			get (): string {
-				return PersistentStorage.title;
+				const title = FirebaseHandler.user.value && FirebaseHandler.selectedProject.value ?
+							  FirebaseHandler.projects.value?.get(FirebaseHandler.selectedProject.value)?.title :
+							  undefined;
+				return title ?? PersistentStorage.title;
 			},
 			set (value: string) {
 				PersistentStorage.title = value;
+				void FirebaseHandler.updateProjectValue(FirebaseHandler.selectedProject.value, 'title', value);
 			}
 		}
 	},
@@ -82,59 +84,9 @@ export default defineComponent({
 		endResize (): void {
 			this.resizing = false;
 		},
-		async loadProjects (): Promise<void> {
-			// Set the loading state for the UI.
-			this.loadingProjects = true;
-			// 
-			if (FirebaseHandler.user.value) {
-				// Fetch the user's collection.
-				const c = collection(FirebaseHandler.database, FirebaseHandler.user.value.uid);
-				// Load all projects in their collection.
-				const querySnapshot = await getDocs(c);
-				this.projects = [];
-				querySnapshot.forEach((doc) => {
-					const data = doc.data();
-					const project = data as CSSProject;
-					project.id = doc.id;
-					this.projects.push(project);
-				});
-				// Sort the projects by date, so that the most recent appear at the top of the list.
-				this.projects.sort((a, b) => b.date - a.date);
-				// If the user has no projects...
-				if (this.projects.length <= 0) {
-					if (HTMLGenerator.input.value.length > 0 && !PersistentStorage.projectSaved) {
-						// ...create one based on the currently open project.
-						const docReference = await addDoc(
-							collection(FirebaseHandler.database, FirebaseHandler.user.value.uid),
-							{
-								id: 'NEWPROJECT',
-								title: PersistentStorage.title,
-								date: Date.now(),
-								link: '',
-								css: LZString.compressToBase64(HTMLGenerator.input.value),
-								settings: {
-									mode: this.colorMode,
-									zoom: this.canvasZoom,
-									ratios: {
-										editor: this.panelRatio.value,
-										canvas: this.panelRatio.canvas
-									}
-								}
-							} as CSSProject
-						);
-						await updateDoc(docReference, { id: docReference.id });
-					} else {
-						// ...create a new, blank project.
-						this.createNewProject();
-					}
-				}
-			}
-			// Set the loading state for the UI.
-			this.loadingProjects = false;
-		},
-		async createNewProject (): Promise<void> {
+		async createNewProject (force = false): Promise<void> {
 			let confirmation = true;
-			if (HTMLGenerator.input.value.length > 0 && !PersistentStorage.projectSaved) {
+			if (!force && HTMLGenerator.input.value.length > 0 && !PersistentStorage.projectSaved) {
 				confirmation = window.confirm('You have unsaved changes. Are you sure you want to create a new project?');
 			}
 			if (confirmation) {
@@ -143,10 +95,9 @@ export default defineComponent({
 				PersistentStorage.title = 'Untitled';
 				if (FirebaseHandler.user.value) {
 					this.loadingProjects = true;
-					const docReference = await addDoc(
+					await addDoc(
 						collection(FirebaseHandler.database, FirebaseHandler.user.value.uid),
 						{
-							id: 'NEWPROJECT',
 							title: 'Untitled',
 							date: Date.now(),
 							link: '',
@@ -161,18 +112,14 @@ export default defineComponent({
 							}
 						} as CSSProject
 					);
-					await updateDoc(docReference, { id: docReference.id });
-					await this.loadProjects();
 					this.loadingProjects = false;
 				}
 				this.$forceUpdate();
 			}
 		},
-		getProjectDataFromId (projectId: string): CSSProject | undefined {
-			return this.projects.find(project => project.id === projectId);
-		},
 		selectProject (projectId: string): void {
-			this.currentProject = this.getProjectDataFromId(projectId);
+			FirebaseHandler.selectedProject.value = projectId;
+			console.log('Selected project:', projectId);
 		},
 		async deleteProject (projectId: string): Promise<void> {
 			this.loadingProjects = true;
@@ -183,7 +130,9 @@ export default defineComponent({
 				} catch (error) {
 					console.warn('Delete project failed:', error);
 				}
-				this.loadProjects();
+			}
+			if (FirebaseHandler.projects.value.size <= 0) {
+				this.createNewProject(true);
 			}
 			this.loadingProjects = false;
 		},
@@ -223,7 +172,7 @@ export default defineComponent({
 			signOut(FirebaseHandler.auth).then(() => {
 				// Logout successful.
 			}).catch((error) => {
-				console.warn('Auth logout failed:', error);
+				console.warn('Logout failed:', error);
 			});
 		}
 	},
@@ -243,9 +192,6 @@ export default defineComponent({
 			PersistentStorage.disable();
 			HTMLGenerator.set(LZString.decompressFromBase64(search.split('?css=')[1]) ?? '');
 		}
-
-		// Reload the projects list when the user logs in/out.
-		watch(FirebaseHandler.user, this.loadProjects);
 	}
 });
 </script>
@@ -303,20 +249,20 @@ export default defineComponent({
 		@mouseup="endResize()"
 		@touchcancel="endResize()"
 	>
-		<ul class="projectLinks" :class="{ showProjectLinks: FirebaseHandler.user.value }" ref="projectLinks">
+		<ul class="projectLinks" :class="{ showProjectLinks: loadingProjects || FirebaseHandler.user.value }" ref="projectLinks">
 			<li>
-				<button :class="{ disable: loadingProjects }" style="width: 100%;" title="New project" @click="createNewProject()">
-					<span v-if="loadingProjects" class="spinner"></span>
+				<button :class="{ disable: loadingProjects || FirebaseHandler.loading.value }" style="width: 100%;" title="New project" @click="createNewProject()">
+					<span v-if="loadingProjects || FirebaseHandler.loading.value" class="spinner"></span>
 					<span v-else class="material-symbols-rounded">add</span>
 				</button>
 			</li>
-			<li v-for="project of projects" :key="project.id">
+			<li v-for="[id, project] of FirebaseHandler.projects.value" :key="id">
 				<ProjectLink
 					:title="project.title"
 					:date="project.date"
-					:loading="loadingProjects"
-					@click.stop=""
-					@delete="deleteProject(project.id)"
+					:loading="loadingProjects || FirebaseHandler.loading.value"
+					@click.stop="selectProject(id)"
+					@delete="deleteProject(id)"
 				/>
 			</li>
 		</ul>

@@ -1,5 +1,4 @@
 export interface CSSProject {
-	id: string,
 	title: string,
 	date: number,
 	link: string,
