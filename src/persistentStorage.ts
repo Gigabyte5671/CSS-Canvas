@@ -62,7 +62,15 @@ export default class PersistentStorage {
 		}
 	}
 
+	static enable (): void {
+		this.#enabled = true;
+	}
+
 	static disable (): void {
 		this.#enabled = false;
+	}
+
+	static clear (): void {
+		window.localStorage.clear();
 	}
 }
