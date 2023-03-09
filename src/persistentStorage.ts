@@ -1,73 +1,86 @@
-export default class PersistentStorage {
-	static #enabled = true;
+import { reactive } from 'vue';
 
-	static #keys = {
+export default class PersistentStorage {
+	private static enabled = true;
+
+	private static keys = {
 		editorInput: 'CSSCanvasInput',
 		title: 'CSSCanvasProjectTitle',
 		colorMode: 'CSSCanvasProjectColorMode',
 		projectHasBeenSaved: 'CSSCanvasProjectSaved'
 	};
 
+	private static storage = reactive({
+		input: window.localStorage.getItem(this.keys.editorInput) ?? '',
+		title: window.localStorage.getItem(this.keys.title) ?? 'Untitled',
+		colorMode: Boolean(window.localStorage.getItem(this.keys.colorMode)),
+		projectSaved: Boolean(window.localStorage.getItem(this.keys.projectHasBeenSaved))
+	});
+
 	constructor () {}
 
 	static get input (): string {
-		return window.localStorage.getItem(this.#keys.editorInput) ?? '';
+		return this.storage.input;
 	}
 
 	static set input (value: string) {
-		if (!this.#enabled) {
+		if (!this.enabled) {
 			return;
 		}
-		window.localStorage.setItem(this.#keys.editorInput, value);
+		this.storage.input = value;
+		window.localStorage.setItem(this.keys.editorInput, value);
 		this.projectSaved = false;
 	}
 
 	static get title (): string {
-		return window.localStorage.getItem(this.#keys.title) ?? 'Untitled';
+		return this.storage.title;
 	}
 
 	static set title (value: string) {
-		if (!this.#enabled) {
+		if (!this.enabled) {
 			return;
 		}
-		window.localStorage.setItem(this.#keys.title, value);
+		this.storage.title = value;
+		window.localStorage.setItem(this.keys.title, value);
 		this.projectSaved = false;
 	}
 
 	static get colorMode (): boolean {
-		return Boolean(window.localStorage.getItem(this.#keys.colorMode));
+		return this.storage.colorMode;
 	}
 
 	static set colorMode (value: boolean) {
-		if (!this.#enabled) {
+		if (!this.enabled) {
 			return;
 		}
+		this.storage.colorMode = value;
 		if (value) {
-			window.localStorage.setItem(this.#keys.colorMode, 'true');
+			window.localStorage.setItem(this.keys.colorMode, 'true');
 		} else {
-			window.localStorage.removeItem(this.#keys.colorMode);
+			window.localStorage.removeItem(this.keys.colorMode);
 		}
 		this.projectSaved = false;
 	}
 
 	static get projectSaved (): boolean {
-		return Boolean(window.localStorage.getItem(this.#keys.projectHasBeenSaved));
+		return this.storage.projectSaved;
 	}
 
 	static set projectSaved (value: boolean) {
+		this.storage.projectSaved = value;
 		if (value) {
-			window.localStorage.setItem(this.#keys.projectHasBeenSaved, 'true');
+			window.localStorage.setItem(this.keys.projectHasBeenSaved, 'true');
 		} else {
-			window.localStorage.removeItem(this.#keys.projectHasBeenSaved);
+			window.localStorage.removeItem(this.keys.projectHasBeenSaved);
 		}
 	}
 
 	static enable (): void {
-		this.#enabled = true;
+		this.enabled = true;
 	}
 
 	static disable (): void {
-		this.#enabled = false;
+		this.enabled = false;
 	}
 
 	static clear (): void {

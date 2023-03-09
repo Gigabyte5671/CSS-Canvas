@@ -29,6 +29,9 @@ export default defineComponent({
 				this.$emit('update:css', value);
 			}
 		}
+	},
+	mounted() {
+		HTMLGenerator.set(this.code);
 	}
 });
 </script>

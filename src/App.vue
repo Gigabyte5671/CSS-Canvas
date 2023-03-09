@@ -87,8 +87,10 @@ export default defineComponent({
 		},
 		code: {
 			get (): string {
-				const cssContent = FirebaseHandler.projects.value.get(FirebaseHandler.selectedProject.value ?? '')?.css;
-				return LZString.decompressFromBase64(cssContent ?? '') ?? '';
+				const css = FirebaseHandler.user.value && FirebaseHandler.selectedProject.value ?
+							  FirebaseHandler.projects.value?.get(FirebaseHandler.selectedProject.value)?.css :
+							  undefined;
+				return LZString.decompressFromBase64(css ?? '') ?? PersistentStorage.input;
 			},
 			set (value: string) {
 				HTMLGenerator.set(value);
