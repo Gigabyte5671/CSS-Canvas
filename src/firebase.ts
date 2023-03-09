@@ -4,8 +4,9 @@ import { initializeApp } from 'firebase/app';
 import type { FirebaseApp } from 'firebase/app';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import type { Auth, Unsubscribe, User } from 'firebase/auth';
-import { getFirestore, collection, doc, query, onSnapshot, updateDoc } from 'firebase/firestore';
+import { getFirestore, collection, doc, addDoc, query, onSnapshot, updateDoc } from 'firebase/firestore';
 import type { Firestore } from 'firebase/firestore';
+import { generateDefaultProject } from './datastructure';
 import type { CSSProject } from './datastructure';
 
 class FirebaseHandler {
@@ -49,7 +50,7 @@ class FirebaseHandler {
 			// Listen to changes in the collection.
 			if (user) {
 				const q = query(collection(this.database, user.uid));
-				this.projectsUnsubscribe = onSnapshot(q, (querySnapshot) => {
+				this.projectsUnsubscribe = onSnapshot(q, async (querySnapshot) => {
 					// Set the loading state for the UI.
 					this.loading.value = true;
 
@@ -71,6 +72,14 @@ class FirebaseHandler {
 					sorted.sort((a, b) => b[1].date - a[1].date);
 					for (const [id, project] of sorted) {
 						this.projects.value.set(id, project);
+					}
+
+					// If no projects exist, create a blank one.
+					if (this.user.value && sorted.length <= 0) {
+						await addDoc(
+							collection(this.database, this.user.value.uid),
+							generateDefaultProject()
+						);
 					}
 
 					// If no project is selected, or the selected project doesn't exist, select the first one in the list.
