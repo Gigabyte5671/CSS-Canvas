@@ -16,7 +16,10 @@ import LoginMenu from './components/LoginMenu.vue';
 import RegisterMenu from './components/RegisterMenu.vue';
 import { signOut } from 'firebase/auth';
 import { collection, doc, addDoc, deleteDoc } from 'firebase/firestore';
+import { generateDefaultProject } from './datastructure';
 import type { CSSProject } from './datastructure';
+
+const defaultProject = generateDefaultProject();
 
 export default defineComponent({
 	name: 'App',
@@ -33,11 +36,11 @@ export default defineComponent({
 			panelRatio: {
 				min: 0.2,
 				max: 1.8,
-				default: 1,
-				value: 1,
-				canvas: 1.25
+				default: defaultProject.settings.ratios.editor,
+				value: defaultProject.settings.ratios.editor,
+				canvas: defaultProject.settings.ratios.canvas
 			},
-			canvasZoom: 1,
+			canvasZoom: defaultProject.settings.zoom,
 			resizing: false,
 			showHelp: false,
 			showLogin: false,
@@ -143,13 +146,13 @@ export default defineComponent({
 			if (confirmation) {
 				HTMLGenerator.clear();
 				PersistentStorage.input = '';
-				PersistentStorage.title = 'Untitled';
+				PersistentStorage.title = defaultProject.title;
 				if (FirebaseHandler.user.value) {
 					this.loadingProjects = true;
 					const docReference = await addDoc(
 						collection(FirebaseHandler.database, FirebaseHandler.user.value.uid),
 						{
-							title: 'Untitled',
+							title: defaultProject.title,
 							date: Date.now(),
 							link: '',
 							css: '',

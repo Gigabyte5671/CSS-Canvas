@@ -12,3 +12,20 @@ export interface CSSProject {
 		}
 	}
 }
+
+export function generateDefaultProject (): CSSProject {
+	return {
+		title: 'Untitled',
+		date: Date.now(),
+		link: '',
+		css: '',
+		settings: {
+			mode: false,
+			zoom: 1,
+			ratios: {
+				editor: 1,
+				canvas: 1.25
+			}
+		}
+	};
+};
