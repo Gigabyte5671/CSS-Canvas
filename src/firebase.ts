@@ -73,8 +73,8 @@ class FirebaseHandler {
 						this.projects.value.set(id, project);
 					}
 
-					// If no project is selected, select the first in the list.
-					if (sorted.length > 0 && !this.selectedProject.value) {
+					// If no project is selected, or the selected project doesn't exist, select the first one in the list.
+					if (sorted.length > 0 && (!this.selectedProject.value || !this.projects.value.has(this.selectedProject.value))) {
 						this.selectedProject.value = sorted[0][0];
 					}
 

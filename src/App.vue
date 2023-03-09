@@ -146,7 +146,7 @@ export default defineComponent({
 				PersistentStorage.title = 'Untitled';
 				if (FirebaseHandler.user.value) {
 					this.loadingProjects = true;
-					await addDoc(
+					const docReference = await addDoc(
 						collection(FirebaseHandler.database, FirebaseHandler.user.value.uid),
 						{
 							title: 'Untitled',
@@ -163,6 +163,7 @@ export default defineComponent({
 							}
 						} as CSSProject
 					);
+					this.selectProject(docReference.id);
 					this.loadingProjects = false;
 				}
 				this.$forceUpdate();
@@ -327,7 +328,7 @@ export default defineComponent({
 	>
 		<ul class="projectLinks" :class="{ showProjectLinks: loadingProjects || FirebaseHandler.user.value }" ref="projectLinks">
 			<li>
-				<button :class="{ disable: loadingProjects || FirebaseHandler.loading.value }" style="width: 100%;" title="New project" @click="createNewProject()">
+				<button :class="{ disable: loadingProjects || FirebaseHandler.loading.value }" style="width: 100%;" title="New project" @click="createNewProject(true)">
 					<span v-if="loadingProjects || FirebaseHandler.loading.value" class="spinner"></span>
 					<span v-else class="material-symbols-rounded">add</span>
 				</button>
