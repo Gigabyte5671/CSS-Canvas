@@ -39,7 +39,7 @@ class HTMLGenerator {
 			stylesheet = CSS.parse(css);
 		} catch (e) {
 			this.error.value = true;
-			console.warn('CSS Error:', e);
+			// console.warn('CSS Error:', e);
 		}
 
 		stylesheet.stylesheet?.rules.forEach((rule, index) => {
@@ -178,7 +178,7 @@ class HTMLGenerator {
 			stylesheet = CSS.parse(css);
 		} catch (e) {
 			this.error.value = true;
-			console.warn('CSS Error:', e);
+			// console.warn('CSS Error:', e);
 		}
 
 		stylesheet.stylesheet?.rules.forEach((rule) => {
