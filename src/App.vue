@@ -350,9 +350,10 @@ nav > *:last-child {
 	list-style: none;
 	border-right: 1px solid var(--color-border);
 	opacity: 0;
+	transition: 0.4s ease width, 0.4s ease opacity;
+	overflow-y: auto;
 	user-select: none;
 	pointer-events: none;
-	transition: 0.4s ease width, 0.4s ease opacity;
 }
 .projectLinks.showProjectLinks {
 	width: 30ch;
