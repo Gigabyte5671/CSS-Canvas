@@ -245,6 +245,8 @@ export default defineComponent({
 		logout (): void {
 			signOut(FirebaseHandler.auth).then(() => {
 				// Logout successful.
+				// Clear the CSS input.
+				HTMLGenerator.set('');
 			}).catch((error) => {
 				console.warn('Logout failed:', error);
 			});
