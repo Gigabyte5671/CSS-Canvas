@@ -140,5 +140,17 @@ span.spinner {
 	}
 }
 
+.visuallyHidden {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	margin: 0;
+	padding: 0;
+	white-space: nowrap; /* Prevent words from getting smushed together (some screen readers do not understand line feeds as a space). */
+	border: 0;
+	clip-path: inset(50%);
+	overflow: hidden;
+}
+
 @media (prefers-color-scheme: dark) {
 }

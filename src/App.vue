@@ -283,7 +283,8 @@ export default defineComponent({
 <template>
 	<nav>
 		<img class="logo" src="./assets/logo-small.webp" alt="CSS Canvas logo" title="CSS Canvas">
-		<input type="text" class="projectTitle" v-model="projectTitle">
+		<label for="projectTitle" class="visuallyHidden">Project Title</label>
+		<input type="text" name="projectTitle" class="projectTitle" v-model="projectTitle">
 		<button v-if="!FirebaseHandler.user.value" title="New" @click="createNewProject()">
 			<span class="material-symbols-rounded">add_box</span>
 		</button>

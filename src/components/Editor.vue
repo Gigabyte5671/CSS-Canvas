@@ -38,7 +38,9 @@ export default defineComponent({
 
 <template>
 	<div class="editorContainer" :class="{ error: HTMLGenerator.error.value }">
+		<label for="cssEditor" class="visuallyHidden">CSS Editor</label>
 		<PrismEditor
+			name="cssEditor"
 			class="editor"
 			line-numbers
 			:tab-size="1"
