@@ -9,8 +9,7 @@ export default defineConfig({
     target: ['es2021', 'chrome100', 'safari13'],
     // don't minify for debug builds
     minify: 'esbuild',
-    // produce sourcemaps for debug builds
-    sourcemap: process.env.NODE_ENV === 'production' ? false : true
+    sourcemap: true
   },
   base: '/'
 });
