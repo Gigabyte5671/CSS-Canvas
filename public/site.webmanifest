@@ -1,6 +1,7 @@
 {
     "name": "CSS Canvas",
     "short_name": "CSS Canvas",
+    "description": "Create amazing CSS components, without any markup!",
     "icons": [
         {
             "src": "/android-chrome-192x192.png",
@@ -13,7 +14,38 @@
             "type": "image/png"
         }
     ],
-    "theme_color": "#1e1e1e",
+    "start_url": "/",
     "background_color": "#1e1e1e",
-    "display": "standalone"
+    "display": "standalone",
+    "scope": "/",
+    "theme_color": "#1e1e1e",
+    "shortcuts": [
+        {
+            "name": "Create a new project",
+            "short_name": "New",
+            "description": "Create a new CSS Canvas project",
+            "url": "/?new",
+            "icons": [{ "src": "/icons/new.png", "sizes": "48x48" }]
+        }
+    ],
+    "screenshots": [
+        {
+            "src": "/images/screenshot-1.png",
+            "type": "image/png",
+            "sizes": "1920x1080",
+            "form_factor": "wide"
+        },
+        {
+            "src": "/images/screenshot-2.png",
+            "type": "image/png",
+            "sizes": "425x890",
+            "form_factor": "narrow"
+        },
+        {
+            "src": "/images/screenshot-3.png",
+            "type": "image/png",
+            "sizes": "425x890",
+            "form_factor": "narrow"
+        }
+    ]
 }
